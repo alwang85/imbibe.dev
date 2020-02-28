@@ -4,18 +4,18 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import * as middy from 'middy'
 import { cors } from 'middy/middlewares'
 
-import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
-import { createTodo } from '../../businessLogic/todos';
+import { CreateItemRequest } from '../../requests/CreateItemRequest'
+import { createItem } from '../../businessLogic/items';
 import { getUserId } from '../utils'
 import { createLogger } from '../../utils/logger'
 
-const logger = createLogger('createTodo')
+const logger = createLogger('createItem')
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const newTodo: CreateTodoRequest = JSON.parse(event.body)
+  const newItem: CreateItemRequest = JSON.parse(event.body)
   const userId = getUserId(event);
   try {
-    const createdItem = await createTodo(newTodo, userId);
+    const createdItem = await createItem(newItem, userId);
 
     logger.info('new item created', createdItem)
 

@@ -4,22 +4,22 @@ import * as middy from 'middy'
 import { cors } from 'middy/middlewares'
 
 import { getUserId } from '../utils'
-import { getAllTodos } from '../../businessLogic/todos'
+import { getAllItems } from '../../businessLogic/items'
 import { createLogger } from '../../utils/logger'
-const logger = createLogger('getTodos')
+const logger = createLogger('getItems')
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const userId = getUserId(event);
 
   try {
-    const toDos = await getAllTodos(userId)
+    const items = await getAllItems(userId)
 
-    logger.info('todo fetching success:');
+    logger.info('todo fetching success for:', userId);
   
     return {
       statusCode: 200,
       body: JSON.stringify({
-        items: toDos
+        items
       })
     }
   } catch(e) {

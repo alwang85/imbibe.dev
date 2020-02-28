@@ -3,20 +3,25 @@
   "title": "todo",
   "type": "object",
   "properties": {
-    "name": {
+    "title": {
       "type": "string"
     },
-    "dueDate": {
+    "description": {
       "type": "string"
     },
-    "done": {
-      "type": "boolean"
+    "category": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "subItems": {
+      "type": "array"
     }
   },
   "required": [
-    "name",
-    "dueDate",
-    "done"
+    "title",
+    "description"
   ],
   "additionalProperties": false
 }
