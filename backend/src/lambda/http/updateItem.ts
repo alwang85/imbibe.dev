@@ -4,21 +4,21 @@ import * as middy from 'middy'
 import { cors } from 'middy/middlewares'
 
 import { createLogger } from '../../utils/logger'
-import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
-import { updateTodo, getTodoById } from '../../businessLogic/todos'
+import { UpdateItemRequest } from '../../requests/UpdateItemRequest'
+import { updateItem, getItemById } from '../../businessLogic/items'
 import { getUserId } from '../utils'
 
 const logger = createLogger('generateUpload')
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const todoId = event.pathParameters.todoId
-  const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
+  const itemId = event.pathParameters.id
+  const updatedItem: UpdateItemRequest = JSON.parse(event.body)
   const currentUserId = getUserId(event);
 
   try {
-    const oldTodo = await getTodoById(todoId);
+    const oldItem = await getItemById(itemId);
 
-    if (!oldTodo) {
+    if (!oldItem) {
       return {
         statusCode: 404,
         body: ''
@@ -26,14 +26,16 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
     }
 
     const params = {
-      ...oldTodo,
-      name: updatedTodo.name,
-      done: updatedTodo.done,
-      dueDate: updatedTodo.dueDate,
+      ...oldItem,
+      description: updatedItem.description,
+      title: updatedItem.title,
+      category: updatedItem.category,
+      url: updatedItem.url,
+      subItems: updatedItem.subItems
     }
-    const result = await updateTodo(params, currentUserId)
+    const result = await updateItem(params, currentUserId)
     
-    logger.info('todo updated', todoId);
+    logger.info('item updated', itemId);
 
     return {
       statusCode: 200,

@@ -4,23 +4,23 @@ import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 
 const XAWS = AWSXRay.captureAWS(AWS)
 
-import { TodoItem } from '../models/TodoItem'
+import { Item } from '../models/Item'
 
-export class TodoAccess {
+export class ItemAccess {
 
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
-    private readonly todoIdIndex = process.env.TODOS_TODOID_INDEX,
-    private readonly todoUseridIndex = process.env.TODOS_USERID_INDEX,
-    private readonly todosTable = process.env.TODOS_TABLE) {
+    private readonly itemIdIndex = process.env.ITEMS_ITEMID_INDEX,
+    private readonly itemUseridIndex = process.env.ITEMS_USERID_INDEX,
+    private readonly itemsTable = process.env.ITEMS_TABLE) {
   }
 
-  async getAllTodos(userId: String): Promise<TodoItem[]> {
+  async getAllItems(userId: String): Promise<Item[]> {
     console.log('Getting all groups')
 
     const result = await this.docClient.query({
-      TableName: this.todosTable,
-      IndexName: this.todoUseridIndex,
+      TableName: this.itemsTable,
+      IndexName: this.itemUseridIndex,
       KeyConditionExpression: 'userId = :userId',
       ExpressionAttributeValues: {
         ':userId': userId
@@ -29,34 +29,34 @@ export class TodoAccess {
     }).promise()
 
     const items = result.Items
-    return items as TodoItem[]
+    return items as Item[]
   }
 
-  async getTodo(todoId: String): Promise<TodoItem> {
+  async getItem(id: String): Promise<Item> {
     const result = await this.docClient.query({
-      TableName: this.todosTable,
-      IndexName: this.todoIdIndex,
-      KeyConditionExpression: 'todoId = :todoId',
+      TableName: this.itemsTable,
+      IndexName: this.itemIdIndex,
+      KeyConditionExpression: 'id = :id',
       ExpressionAttributeValues: {
-        ':todoId': todoId,
+        ':id': id,
       },
       ScanIndexForward: false
     }).promise()
 
     const item = result.Items
-    return item[0] as TodoItem
+    return item[0] as Item
   }
 
-  async deleteTodo(
-    todo: TodoItem,
+  async deleteItem(
+    item: Item,
     currentUserId: String,
-  ): Promise<TodoItem> {
-    console.log('deleting item', todo)
+  ): Promise<Item> {
+    console.log('deleting item', item)
     const deleteditem = await this.docClient.delete({
-      TableName: this.todosTable,
+      TableName: this.itemsTable,
         Key: {
-          todoId: todo.todoId,
-          userId: todo.userId,
+          id: item.id,
+          modifiedAt: item.modifiedAt,
         },
         ConditionExpression:"userId = :currentUserId",
         ExpressionAttributeValues: {
@@ -65,44 +65,43 @@ export class TodoAccess {
     }).promise();
 
     console.log('deleted item', deleteditem)
-    return todo;
+    return item;
   }
 
-  async updateTodo(
-    todo: TodoItem,
+  async updateItem(
+    item: Item,
     currentUserId: String,
-  ): Promise<TodoItem> {
+  ): Promise<Item> {
 
     await this.docClient.update({
-      TableName: this.todosTable,
+      TableName: this.itemsTable,
       Key: {
-        todoId: todo.todoId,
-        userId: todo.userId,
+        id: item.id,
+        userId: item.userId,
       },
-      UpdateExpression: "set done=:done, attachmentUrl=:attachmentUrl, dueDate=:dueDate, #nname=:name",
+      UpdateExpression: "set title=:title, category=:category, description=:description, modifiedAt=:modifiedAt, subItems=:subItems, url=:url",
       ExpressionAttributeValues:{
-        ":done": todo.done,
-        ":name": todo.name,
-        ":dueDate": todo.dueDate,
+        ":title": item.title,
+        ":category": item.category,
+        ":description": item.description,
+        ":modifiedAt": item.modifiedAt,
         ':userId' : currentUserId,
-        ':attachmentUrl': todo.attachmentUrl
-      },
-      ExpressionAttributeNames: {
-        '#nname': 'name' // caused hidden errors due to reserved word
+        ':url': item.url,
+        ':subItems': item.subItems
       },
       ConditionExpression: 'userId = :userId',
     }).promise()
 
-    return todo
+    return item
   }
 
-  async createTodo(todo: TodoItem): Promise<TodoItem> {
+  async createItem(item: Item): Promise<Item> {
     await this.docClient.put({
-      TableName: this.todosTable,
-      Item: todo
+      TableName: this.itemsTable,
+      Item: item
     }).promise()
 
-    return todo
+    return item
   }
 }
 

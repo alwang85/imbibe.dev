@@ -4,19 +4,19 @@ import * as middy from 'middy'
 import { cors } from 'middy/middlewares'
 
 import { getUserId } from '../utils'
-import { deleteTodo, getTodoById } from '../../businessLogic/todos'
+import { deleteItem, getItemById } from '../../businessLogic/items'
 import { createLogger } from '../../utils/logger'
-const logger = createLogger('deleteTodo')
+const logger = createLogger('deleteItem')
 
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const currentUserId = getUserId(event);
-  const todoId = event.pathParameters.todoId
+  const itemId = event.pathParameters.id
 
   try {
-    const oldTodo = await getTodoById(todoId);
+    const oldItem = await getItemById(itemId);
 
-    if (!oldTodo) {
+    if (!oldItem) {
       return {
         statusCode: 404,
         headers: {
@@ -26,9 +26,9 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
       }    
     }
 
-    await deleteTodo(oldTodo, currentUserId);
+    await deleteItem(oldItem, currentUserId);
 
-    logger.info('todo deleted:', todoId);
+    logger.info('todo deleted:', itemId);
     
     return {
       statusCode: 204,
