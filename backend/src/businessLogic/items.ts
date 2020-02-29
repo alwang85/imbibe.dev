@@ -34,6 +34,16 @@ export async function createItem(
 
   // server side authentication temp disable
   // if(!currentUserId) throw new Error('not authenticated')
+  console.log('incoming createItemRequest', createItemRequest);
+
+  let newSubItems;
+  if (createItemRequest.subItems) {
+    newSubItems = createItemRequest.subItems.map(subItem => ({
+      ...subItem,
+      modifiedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+    }))
+  }
 
   return await itemAccess.createItem({
     id,
@@ -41,7 +51,7 @@ export async function createItem(
     title: createItemRequest.title,
     url: createItemRequest.url,
     description: createItemRequest.description,
-    subItems: createItemRequest.subItems,
+    subItems: newSubItems || null,
     category: createItemRequest.category || 'unsorted',
     modifiedAt: new Date().toISOString(),
     createdAt: new Date().toISOString(),

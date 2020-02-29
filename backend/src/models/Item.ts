@@ -1,4 +1,4 @@
-import { subItem } from './SubItem';
+import { SubItem } from './SubItem';
 
 export interface Item {
   id: string,
@@ -9,5 +9,5 @@ export interface Item {
   createdAt: string
   modifiedAt: string
   url?: string
-  subItems?: subItem[]
+  subItems?: SubItem[]
 }
