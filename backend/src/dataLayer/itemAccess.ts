@@ -96,6 +96,7 @@ export class ItemAccess {
   }
 
   async createItem(item: Item): Promise<Item> {
+    console.info('createItem in dataLayer', item);
     await this.docClient.put({
       TableName: this.itemsTable,
       Item: item

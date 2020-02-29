@@ -16,7 +16,6 @@ import {
 
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
 import Auth from '../auth/Auth'
-import { CreateItem } from './CreateItem'
 import { Item } from '../types/Item'
 
 interface ItemsProps {
@@ -25,7 +24,6 @@ interface ItemsProps {
 }
 
 interface ItemsState {
-  items: Item[]
   newItemTitle: string
   newItemDescription: string
   newItemUrl: string
@@ -33,7 +31,6 @@ interface ItemsState {
   loadingItems: boolean
 }
 const initialItemsState = {
-  items: [],
   newItemTitle: '',
   newItemDescription: '',
   newItemUrl: '',
@@ -46,6 +43,21 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
     ...initialItemsState
   }
 
+  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const target = event.target;
+    const value = target.value;
+    const name = target.name;
+
+    this.setState({
+      ...this.state,
+      [name]: value
+    });
+  }
+
+  onEditButtonClick = (itemId: string) => {
+    this.props.history.push(`/items/${itemId}/edit`)
+  }
+
   onItemCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
       const newItem = await createItem(this.props.auth.getIdToken(), {
@@ -56,7 +68,6 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
       })
       this.setState({
         ...initialItemsState,
-        items: [...this.state.items, newItem],
       })
     } catch {
       alert('Item creation failed')
@@ -66,23 +77,8 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
   onItemDelete = async (itemId: string) => {
     try {
       await deleteItem(this.props.auth.getIdToken(), itemId)
-      this.setState({
-        items: this.state.items.filter(item => item.id != itemId)
-      })
     } catch {
       alert('Item deletion failed')
-    }
-  }
-
-  async componentDidMount() {
-    try {
-      const items = await getItems(this.props.auth.getIdToken())
-      this.setState({
-        items,
-        loadingItems: false
-      })
-    } catch (e) {
-      alert(`Failed to fetch items: ${e.message}`)
     }
   }
 
@@ -90,22 +86,47 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
     return (
       <div>
         <Header as="h1">TODOs</Header>
-        {/* add item */}
-        {<CreateItem auth={this.props.auth} position="top"/>}
 
-        {this.renderItems()}
-        {/* add item */}
+        {this.renderCreateItemInput()}
+
+        {this.renderItem()}
       </div>
     )
   }
 
-  renderItems() {
-    if (this.state.loadingItems) {
-      return this.renderLoading()
-    }
-
-    return this.renderItemsList()
+  createInputForm(inputName: string) {
+    return (
+      <Input
+        name={inputName}
+        action={{
+          color: 'teal',
+          labelPosition: 'left',
+          icon: 'add',
+          content: 'New task',
+          onClick: this.onItemCreate
+        }}
+        fluid
+        actionPosition="left"
+        placeholder={inputName}
+        onChange={this.handleInputChange}
+      />
+    )
   }
+
+  renderCreateItemInput() {
+    return [
+      'newItemTitle',
+      'newItemDescription',
+      'newItemCategory',
+      'newItemUrl'
+    ].map((fieldName) => (
+      <Grid.Row>
+        <Grid.Column width={16}>
+          {this.createInputForm(fieldName)}
+        </Grid.Column>
+      </Grid.Row>
+    )
+  )}
 
   renderLoading() {
     return (
@@ -117,40 +138,9 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
     )
   }
 
-  renderItemsList() {
+  renderItem() {
     return (
-      <Grid padded>
-        {this.state.items.map((item, pos) => {
-          return (
-            <Grid.Row key={item.id}>
-              {/* <Grid.Column width={1} verticalAlign="middle">
-                <Checkbox
-                  onChange={() => this.onItemCheck(pos)}
-                  checked={item.done}
-                />
-              </Grid.Column> */}
-              <Grid.Column width={10} verticalAlign="middle">
-                {item.title}
-              </Grid.Column>
-              <Grid.Column width={3} floated="right">
-                {item.description}
-              </Grid.Column>
-              <Grid.Column width={1} floated="right">
-                <Button
-                  icon
-                  color="red"
-                  onClick={() => this.onItemDelete(item.id)}
-                >
-                  <Icon name="delete" />
-                </Button>
-              </Grid.Column>
-              <Grid.Column width={16}>
-                <Divider />
-              </Grid.Column>
-            </Grid.Row>
-          )
-        })}
-      </Grid>
+      <div/>
     )
   }
 
