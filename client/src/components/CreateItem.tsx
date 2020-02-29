@@ -100,7 +100,7 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
       })
       
       // tell parent to add item if successful
-      console.log('new item creation success')
+      console.log('new item creation success', newItem)
     } catch {
       alert('Item creation failed')
     }
