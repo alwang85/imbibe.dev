@@ -17,6 +17,7 @@ import {
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
 import Auth from '../auth/Auth'
 import { CreateItem } from './CreateItem'
+import { ViewItem } from './ViewItem'
 import { Item } from '../types/Item'
 
 interface ItemsProps {
@@ -87,14 +88,22 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
   }
 
   render() {
+    const { auth } = this.props;
+    const { items } = this.state;
+
     return (
       <div>
         <Header as="h1">TODOs</Header>
-        {/* add item */}
-        {<CreateItem auth={this.props.auth} position="top"/>}
-
-        {this.renderItems()}
-        {/* add item */}
+        {<CreateItem auth={auth} position="top"/>}
+        {
+          items && items.length && items.map(item => (
+            <ViewItem 
+              auth={this.props.auth}
+              item={item}
+            />
+          ))
+        }
+        {<CreateItem auth={auth} position="bottom"/>}
       </div>
     )
   }
@@ -152,12 +161,5 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
         })}
       </Grid>
     )
-  }
-
-  calculateDueDate(): string {
-    const date = new Date()
-    date.setDate(date.getDate() + 7)
-
-    return dateFormat(date, 'yyyy-mm-dd') as string
   }
 }
