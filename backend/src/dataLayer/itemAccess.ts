@@ -56,7 +56,7 @@ export class ItemAccess {
       TableName: this.itemsTable,
         Key: {
           id: item.id,
-          modifiedAt: item.modifiedAt,
+          createdAt: item.createdAt,
         },
         ConditionExpression:"userId = :currentUserId",
         ExpressionAttributeValues: {
@@ -73,13 +73,14 @@ export class ItemAccess {
     currentUserId: String,
   ): Promise<Item> {
 
+    console.info('updateItem in dataLayer', item);
     await this.docClient.update({
       TableName: this.itemsTable,
       Key: {
         id: item.id,
-        userId: item.userId,
+        createdAt: item.createdAt,
       },
-      UpdateExpression: "set title=:title, category=:category, description=:description, modifiedAt=:modifiedAt, subItems=:subItems, url=:url",
+      UpdateExpression: "set title=:title, category=:category, description=:description, modifiedAt=:modifiedAt, subItems=:subItems, #uurl=:url",
       ExpressionAttributeValues:{
         ":title": item.title,
         ":category": item.category,
@@ -88,6 +89,9 @@ export class ItemAccess {
         ':userId' : currentUserId,
         ':url': item.url,
         ':subItems': item.subItems
+      },
+      ExpressionAttributeNames: {
+        '#uurl': 'url' // caused hidden errors due to reserved word
       },
       ConditionExpression: 'userId = :userId',
     }).promise()

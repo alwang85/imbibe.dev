@@ -95,15 +95,6 @@ export default class App extends Component<AppProps, AppState> {
             return <Items {...props} auth={this.props.auth} />
           }}
         />
-
-        <Route
-          path="/items/:itemId/edit"
-          exact
-          render={props => {
-            return <EditItem {...props} auth={this.props.auth} />
-          }}
-        />
-
         <Route component={NotFound} />
       </Switch>
     )

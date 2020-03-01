@@ -8,7 +8,7 @@ import { UpdateItemRequest } from '../../requests/UpdateItemRequest'
 import { updateItem, getItemById } from '../../businessLogic/items'
 import { getUserId } from '../utils'
 
-const logger = createLogger('generateUpload')
+const logger = createLogger('updateItem')
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const itemId = event.pathParameters.id
@@ -17,6 +17,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
 
   try {
     const oldItem = await getItemById(itemId);
+    logger.info('old item in updateItem', oldItem);
 
     if (!oldItem) {
       return {
@@ -33,6 +34,8 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
       url: updatedItem.url,
       subItems: updatedItem.subItems
     }
+
+    logger.info('params in updateItem', params);
     const result = await updateItem(params, currentUserId)
     
     logger.info('item updated', itemId);
