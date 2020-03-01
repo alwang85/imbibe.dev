@@ -1,5 +1,4 @@
 import dateFormat from 'dateformat'
-import { History } from 'history'
 import update from 'immutability-helper'
 import * as React from 'react'
 import {
@@ -17,12 +16,11 @@ import {
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
 import Auth from '../auth/Auth'
 import { CreateItem } from './CreateItem'
-import { ViewItem } from './ViewItem'
+import { ItemSlot } from './ItemSlot'
 import { Item } from '../types/Item'
 
 interface ItemsProps {
   auth: Auth
-  history: History
 }
 
 interface ItemsState {
@@ -97,7 +95,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
         {<CreateItem auth={auth} position="top"/>}
         {
           items && items.length && items.map(item => (
-            <ViewItem 
+            <ItemSlot 
               auth={this.props.auth}
               item={item}
             />

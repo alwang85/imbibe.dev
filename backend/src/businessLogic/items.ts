@@ -40,6 +40,7 @@ export async function createItem(
   if (createItemRequest.subItems) {
     newSubItems = createItemRequest.subItems.map(subItem => ({
       ...subItem,
+      url: subItem.url || null,
       modifiedAt: new Date().toISOString(),
       createdAt: new Date().toISOString(),
     }))
@@ -49,7 +50,7 @@ export async function createItem(
     id,
     userId: currentUserId,
     title: createItemRequest.title,
-    url: createItemRequest.url,
+    url: createItemRequest.url || null,
     description: createItemRequest.description,
     subItems: newSubItems || null,
     category: createItemRequest.category || 'unsorted',

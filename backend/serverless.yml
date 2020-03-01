@@ -41,7 +41,7 @@ provider:
     lambda: true
     apiGateway: true
   environment:
-    ITEMS_TABLE: Items-${self:provider.stage}
+    ITEMS_TABLE: Imbibe-Items-${self:provider.stage}
     ITEMS_USERID_INDEX: Items_userId_Index
     ITEMS_ITEMID_INDEX: Items_itemId_Index
     IMAGES_S3_BUCKET: imbibe-images-${self:provider.stage}
@@ -155,13 +155,26 @@ functions:
         Resource: "*"
 resources:
   Resources:
+    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: ${self:provider.stage}-${self:service}
+    GatewayResponseResourceNotFound:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        ResponseType: BAD_REQUEST_BODY
+        StatusCode : "422"
+        ResponseTemplates:
+          application/json: "{\"message\": \"$context.error.message\", \"error\": \"$context.error.validationErrorString\"}"
     GatewayResponseDefault4XX:
       Type: AWS::ApiGateway::GatewayResponse
       Properties:
         ResponseParameters:
           gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
           gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-          gatewayresponse.header.Access-Control-Allow-Methods: "'GET,OPTIONS,POST'"
+          gatewayresponse.header.Access-Control-Allow-Methods: "'GET,OPTIONS,POST,PATCH'"
         ResponseType: DEFAULT_4XX
         RestApiId:
           Ref: ApiGatewayRestApi
@@ -171,14 +184,14 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
-          - AttributeName: modifiedAt
+          - AttributeName: createdAt
             AttributeType: S
           - AttributeName: userId
             AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH
-          - AttributeName: modifiedAt
+          - AttributeName: createdAt
             KeyType: RANGE
         GlobalSecondaryIndexes:
           - IndexName: ${self:provider.environment.ITEMS_USERID_INDEX}

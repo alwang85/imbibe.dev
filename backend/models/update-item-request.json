@@ -10,19 +10,35 @@
       "type": "string"
     },
     "category": {
-      "type": "boolean"
+      "type": "string"
     },
     "url": {
       "type": "string"
     },
     "subItems": {
       "type": "array"
+    },
+    "id": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "modifiedAt": {
+      "type": "string"
+    },
+    "userId": {
+      "type": "string"
     }
   },
   "required": [
     "title",
     "description",
-    "category"
+    "category",
+    "modifiedAt",
+    "userId",
+    "id",
+    "createdAt"
   ],
   "additionalProperties": false
 }

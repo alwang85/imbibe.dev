@@ -7,6 +7,7 @@ import {
   Accordion,
   Card,
   Button,
+  Icon,
   Form,
   Input,
   TextArea,
@@ -19,9 +20,14 @@ import Auth from '../auth/Auth'
 import { Item } from '../types/Item'
 import { SubItem } from '../types/SubItem'
 
+interface ToggleItemFunc {
+  (): void;
+}
+
 interface ViewItemProps {
   auth: Auth
   item: Item
+  toggleEditItem: ToggleItemFunc
 }
 
 interface ViewItemState {
@@ -87,7 +93,7 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
   }
 
   renderItem() {
-    const { title, description, subItems = [] } = this.props.item;
+    const { title, description, id, subItems = [] } = this.props.item;
     const { subItemsTabOpen, expandedSubItem, activeIndexs } = this.state;
     console.log('subItemsTabOpen in render', subItemsTabOpen)
 
@@ -120,6 +126,20 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
           </Card.Description>
         </Card.Content>
         <AccordionExampleNested />
+        <Card.Content>
+          <Button 
+            icon
+            onClick={this.props.toggleEditItem}
+          >
+            <Icon name='pencil' />
+          </Button>
+          <Button 
+            icon
+            onClick={() => this.onItemDelete(id)}
+          >
+            <Icon name='trash' />
+          </Button>
+        </Card.Content>
       </Card>
     )
   }

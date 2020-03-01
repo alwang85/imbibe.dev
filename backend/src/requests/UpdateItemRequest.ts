@@ -6,4 +6,8 @@ export interface UpdateItemRequest {
   category?: string
   url?: string
   subItems?: SubItem[]
+  modifiedAt: string
+  userId: string,
+  createdAt: string,
+  id: string
 }
