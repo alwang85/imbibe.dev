@@ -1,4 +1,5 @@
 import auth0 from 'auth0-js';
+import get from 'lodash/get';
 import { authConfig } from '../config';
 
 export default class Auth {
@@ -24,6 +25,7 @@ export default class Auth {
     this.getAccessToken = this.getAccessToken.bind(this);
     this.getIdToken = this.getIdToken.bind(this);
     this.renewSession = this.renewSession.bind(this);
+    this.getUserId = this.getUserId.bind(this);
   }
 
   login() {
@@ -36,6 +38,7 @@ export default class Auth {
         console.log('Access token: ', authResult.accessToken)
         console.log('id token: ', authResult.idToken)
         this.setSession(authResult);
+
       } else if (err) {
         this.history.replace('/');
         console.log(err);
@@ -52,6 +55,10 @@ export default class Auth {
     return this.idToken;
   }
 
+  getUserId() {
+    return this.userId;
+  }
+
   setSession(authResult) {
     // Set isLoggedIn flag in localStorage
     localStorage.setItem('isLoggedIn', 'true');
@@ -60,6 +67,7 @@ export default class Auth {
     let expiresAt = (authResult.expiresIn * 1000) + new Date().getTime();
     this.accessToken = authResult.accessToken;
     this.idToken = authResult.idToken;
+    this.userId = get(authResult, 'idTokenPayload.sub');
     this.expiresAt = expiresAt;
 
     // navigate to the home route
@@ -67,10 +75,13 @@ export default class Auth {
   }
 
   renewSession() {
+    console.log('trying to renew session')
     this.auth0.checkSession({}, (err, authResult) => {
        if (authResult && authResult.accessToken && authResult.idToken) {
+         console.log('setting session after renewal')
          this.setSession(authResult);
        } else if (err) {
+          console.log('failed to renew session')
          this.logout();
          console.log(err);
          alert(`Could not get a new token (${err.error}: ${err.error_description}).`);
