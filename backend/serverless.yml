@@ -17,6 +17,12 @@ custom:
       - name: UpdateItemRequest
         contentType: application/json
         schema: ${file(models/update-item-request.json)}
+      - name: CreateUserRequest
+        contentType: application/json
+        schema: ${file(models/create-user-request.json)}
+      - name: UpdateUserRequest
+        contentType: application/json
+        schema: ${file(models/update-user-request.json)}
   dynamodb:
     start:
       port: 8000
@@ -42,6 +48,7 @@ provider:
     apiGateway: true
   environment:
     ITEMS_TABLE: Imbibe-Items-${self:provider.stage}
+    USERS_TABLE: Imbibe-Users-${self:provider.stage}
     ITEMS_USERID_INDEX: Items_userId_Index
     ITEMS_ITEMID_INDEX: Items_itemId_Index
     IMAGES_S3_BUCKET: imbibe-images-${self:provider.stage}
@@ -153,6 +160,77 @@ functions:
           - xray:PutTraceSegments
           - xray:PutTelemetryRecords
         Resource: "*"
+
+  GetUser:
+    handler: src/lambda/http/getUser.handler
+    events:
+      - http:
+          method: get
+          path: users/{userId}
+          cors: true
+          authorizer: Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}
+      - Effect: Allow
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+        Resource: "*"
+      
+  CreateUser:
+    handler: src/lambda/http/createUser.handler
+    events:
+      - http:
+          method: post
+          path: users
+          cors: true
+          authorizer: Auth
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Create a new User
+            description: Create a new User
+            requestModels:
+              'application/json': CreateUserRequest
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}
+      - Effect: Allow
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+        Resource: "*"
+
+  UpdateUser:
+    handler: src/lambda/http/updateUser.handler
+    events:
+      - http:
+          method: patch
+          path: users/{userId}
+          cors: true
+          authorizer: Auth
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Update existing User
+            description: Update existing User
+            requestModels:
+              'application/json': UpdateUserRequest
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}
+      - Effect: Allow
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+        Resource: "*"
+
 resources:
   Resources:
     ApiGatewayRestApi:
@@ -208,6 +286,17 @@ resources:
               ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.ITEMS_TABLE}
+    UsersDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.USERS_TABLE}
     RequestBodyValidator:
       Type: AWS::ApiGateway::RequestValidator
       Properties:

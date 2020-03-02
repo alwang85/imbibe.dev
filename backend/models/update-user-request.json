@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "user",
+  "type": "object",
+  "properties": {
+    "userId": {
+      "type": "string"
+    },
+    "isProfilePublic": {
+      "type": "boolean"
+    },
+    "displayName": {
+      "type": "string"
+    },
+    "categories": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "userId",
+    "isProfilePublic"
+  ],
+  "additionalProperties": false
+}
