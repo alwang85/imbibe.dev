@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link, Route, Router, Switch } from 'react-router-dom'
+import { Link, Route, Router, Switch, Redirect } from 'react-router-dom'
 import { Grid, Menu, Segment } from 'semantic-ui-react'
 
 import Auth from './auth/Auth'
@@ -7,6 +7,8 @@ import Auth from './auth/Auth'
 import Nav from './components/Nav';
 import { NotFound } from './components/NotFound'
 import { Items } from './components/Items'
+import { LogIn } from './components/LogIn'
+import { Profile } from './components/Profile'
 import GetOrCreateUser from './components/GetOrCreateUser';
 
 export interface AppProps {}
@@ -51,7 +53,7 @@ export default class App extends Component<AppProps, AppState> {
           path="/"
           exact
           render={props => {
-            return <Items {...props} auth={this.props.auth} />
+            return <NotFound />
           }}
         />
         <Route component={NotFound} />
@@ -59,23 +61,57 @@ export default class App extends Component<AppProps, AppState> {
     );
 
     const authSwitch = (
-      <Switch>
-        <Route
-          path="/"
-          exact
-          render={props => {
-            return (
-              <React.Fragment>
-                <GetOrCreateUser {...props} auth={this.props.auth}/>
-                <Items {...props} auth={this.props.auth} />
-              </React.Fragment>
-            )
-          }}
-        />
-        <Route component={NotFound} />
-      </Switch>
+      <div>
+        <GetOrCreateUser auth={this.props.auth}/>
+        <Switch>
+          <Route
+            path="/"
+            exact
+            render={props => {
+              return (
+                <React.Fragment>
+                  <Items {...props} auth={this.props.auth} />
+                </React.Fragment>
+              )
+            }}
+          />
+          <Route path="/login" exact><LogIn auth={this.props.auth}/></Route>
+
+          {/* <Route path="/public/:nickname">
+            <PublicProfileComponent />
+          </Route> */}
+          <PrivateRoute path="/dashboard" auth={this.props.auth}>
+            <Items auth={this.props.auth} />
+          </PrivateRoute>
+          <PrivateRoute path="/profile" auth={this.props.auth}>
+            <Profile auth={this.props.auth} />
+          </PrivateRoute>
+          <Route component={NotFound} />
+        </Switch>
+      </div>
     )
 
     return this.props.auth.isAuthenticated() ? authSwitch : unAuthSwitch
   }
+}
+
+// @ts-ignore
+function PrivateRoute({ children, auth, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={({ location }) =>
+        auth.isAuthenticated() ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/login",
+              state: { from: location }
+            }}
+          />
+        )
+      }
+    />
+  );
 }

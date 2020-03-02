@@ -3,6 +3,6 @@ import { Category } from './Category';
 export interface UpdateUserRequest {
   userId: string,
   isProfilePublic: boolean,
-  displayName?: string,
+  displayName?: string | null,
   categories?: Category[]
 }

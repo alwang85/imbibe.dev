@@ -23,6 +23,8 @@ export class UserAccess {
       ScanIndexForward: false
     }).promise()
 
+    console.log('obtained user', result)
+
     const item = result.Items
     return item[0] as User
   }
@@ -46,11 +48,11 @@ export class UserAccess {
     await this.docClient.update({
       TableName: this.usersTable,
       Key: {
-        userId: currentUserId,
+        userId: userObject.userId,
       },
-      UpdateExpression: "set title=:title, category=:category, description=:description, modifiedAt=:modifiedAt, subItems=:subItems, #uurl=:url",
+      UpdateExpression: "set isProfilePublic=:isProfilePublic, displayName=:displayName, categories=:categories",
       ExpressionAttributeValues:{
-        ":userId": userObject.userId,
+        ":currentUserId": currentUserId,
         ":isProfilePublic": userObject.isProfilePublic,
         ':displayName': userObject.displayName,
         ':categories': userObject.categories

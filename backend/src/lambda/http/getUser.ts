@@ -12,15 +12,13 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   const userId = getUserId(event);
 
   try {
-    const item = await getUserById(userId)
+    const user = await getUserById(userId)
 
     logger.info('todo fetching success for:', userId);
   
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        item
-      })
+      body: JSON.stringify(user)
     }
   } catch(e) {
     logger.error('failed to get', e);
