@@ -9,11 +9,14 @@ import {
   Input,
   TextArea,
   Card,
-  CardContent
+  CardContent,
+  Dropdown
 } from 'semantic-ui-react'
 
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
+import { UserWrapper } from '../context/userContext'
 import Auth from '../auth/Auth'
+import { User } from '../types/User'
 import { Item } from '../types/Item'
 import { SubItem } from '../types/SubItem'
 
@@ -25,6 +28,7 @@ interface ItemsProps {
   auth: Auth
   item: Item,
   toggleEditItem: ToggleItemFunc
+  user: User
 }
 
 interface ItemsState {
@@ -76,6 +80,15 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
     this.setState({
       ...this.state,
       [name]: value
+    });
+  }
+
+  handleDropdownChange = (event: React.SyntheticEvent<HTMLElement, Event>, data: any) => {
+    console.log('dropdwon data', data)
+    console.log('dropdown event', event)
+
+    this.setState({
+      'newItemCategory': data.value
     });
   }
 
@@ -181,16 +194,23 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
   }
 
   render() {
+    const categories = this.props.user.categories || [];
+    const categoryOptions = categories.map(category => ({
+      key: category.name,
+      text: category.name,
+      value: category.name,
+    }));
+
     return (
       <div>
         {
-          this.renderEditItemInput()
+          this.renderEditItemInput(categoryOptions)
         }
       </div>
     )
   }
 
-  renderEditItemInput() {
+  renderEditItemInput(categoryOptions: any) {
     return (
       <Form>
         <Form.Field 
@@ -209,13 +229,14 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
           value={this.state.newItemDescription}
           onChange={this.handleInputChange}
         />
-        <Form.Field 
-          control={Input}
+        <Form.Field
+          control={Dropdown}
+          placeholder='Select Category'
           name='newItemCategory'
           label='category'
-          placeholder='category'
+          options={categoryOptions}
           value={this.state.newItemCategory}
-          onChange={this.handleInputChange}
+          onChange={this.handleDropdownChange}
         />
         <Form.Field 
           control={Input}
@@ -293,3 +314,5 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
     )
   }
 }
+
+export const WrappedEditItem = UserWrapper(EditItem);

@@ -14,6 +14,7 @@ export class UserAccess {
   }
 
   async getUser(userId: String): Promise<User> {
+    console.log('incoming userId in getUser', userId)
     const result = await this.docClient.query({
       TableName: this.usersTable,
       KeyConditionExpression: 'userId = :userId',
@@ -26,6 +27,7 @@ export class UserAccess {
     console.log('obtained user', result)
 
     const item = result.Items
+    console.log('returning user item', item[0]);
     return item[0] as User
   }
 

@@ -24,7 +24,7 @@
     "@types/node": "11.13.4",
     "@types/react": "16.8.13",
     "@types/react-dom": "16.8.4",
-    "@types/react-router-dom": "^4.3.4",
+    "@types/react-router-dom": "^4.3.5",
     "@types/styled-components": "^4.1.18",
     "auth0-js": "^9.11.1",
     "typescript": "3.4.3"
@@ -33,7 +33,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "buildArchive": "npm run build && cd build && zip -r Archive.zip . && cd .."
   },
   "eslintConfig": {
     "extends": "react-app"

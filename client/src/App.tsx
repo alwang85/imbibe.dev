@@ -3,12 +3,13 @@ import { Link, Route, Router, Switch, Redirect } from 'react-router-dom'
 import { Grid, Menu, Segment } from 'semantic-ui-react'
 
 import Auth from './auth/Auth'
-
 import Nav from './components/Nav';
 import { NotFound } from './components/NotFound'
 import { Items } from './components/Items'
 import { LogIn } from './components/LogIn'
 import { Profile } from './components/Profile'
+import UserContext from './context/userContext'
+import { User, emptyUser } from './types/User';
 import GetOrCreateUser from './components/GetOrCreateUser';
 
 export interface AppProps {}
@@ -18,12 +19,36 @@ export interface AppProps {
   history: any
 }
 
-export interface AppState {}
+export interface AppState {
+  user: User,
+  setUser: (user: User) => void,
+  isInitialAuthenticatedLoad: boolean,
+}
 
 export default class App extends Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props)
+
+    this.setUser = this.setUser.bind(this)
+
+    this.state = {
+      user: emptyUser as User,
+      setUser: this.setUser,
+      isInitialAuthenticatedLoad: true,
+    };
   }
+
+  setUser = (user: User) => {
+    console.log('user in setUser', user)
+    if(this.state.isInitialAuthenticatedLoad) {
+      this.setState({
+        user: {
+          ...user,
+        } as User,
+        isInitialAuthenticatedLoad: false
+      });
+    }
+  };
 
   render() {
     return (
@@ -61,8 +86,12 @@ export default class App extends Component<AppProps, AppState> {
     );
 
     const authSwitch = (
-      <div>
-        <GetOrCreateUser auth={this.props.auth}/>
+      <UserContext.Provider value={this.state} >
+        <GetOrCreateUser
+          auth={this.props.auth}
+          setUser={this.setUser}
+          isInitialAuthenticatedLoad={this.state.isInitialAuthenticatedLoad}
+        />
         <Switch>
           <Route
             path="/"
@@ -88,7 +117,7 @@ export default class App extends Component<AppProps, AppState> {
           </PrivateRoute>
           <Route component={NotFound} />
         </Switch>
-      </div>
+      </UserContext.Provider>
     )
 
     return this.props.auth.isAuthenticated() ? authSwitch : unAuthSwitch

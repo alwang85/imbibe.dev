@@ -6,3 +6,8 @@ export interface User {
   displayName?: string | null,
   categories?: Category[]
 }
+
+export const emptyUser = {
+  userId: "",
+  isProfilePublic: false
+}

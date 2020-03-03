@@ -12,7 +12,7 @@ export default class Auth {
     clientID: authConfig.clientId,
     redirectUri: authConfig.callbackUrl,
     responseType: 'token id_token',
-    scope: 'openid'
+    scope: 'openid profile email'
   });
 
   constructor(history) {
@@ -26,6 +26,7 @@ export default class Auth {
     this.getIdToken = this.getIdToken.bind(this);
     this.renewSession = this.renewSession.bind(this);
     this.getUserId = this.getUserId.bind(this);
+    this.getUserInfo = this.getUserInfo.bind(this);
   }
 
   login() {
@@ -37,7 +38,10 @@ export default class Auth {
       if (authResult && authResult.accessToken && authResult.idToken) {
         console.log('Access token: ', authResult.accessToken)
         console.log('id token: ', authResult.idToken)
-        this.setSession(authResult);
+
+        this.auth0.client.userInfo(authResult.accessToken, (err, user) => {
+          this.setSession(authResult, user);
+        });
 
       } else if (err) {
         this.history.replace('/');
@@ -59,7 +63,11 @@ export default class Auth {
     return this.userId;
   }
 
-  setSession(authResult) {
+  getUserInfo() {
+    return this.userInfo;
+  }
+
+  setSession(authResult, userInfo) {
     // Set isLoggedIn flag in localStorage
     localStorage.setItem('isLoggedIn', 'true');
 
@@ -69,6 +77,7 @@ export default class Auth {
     this.idToken = authResult.idToken;
     this.userId = get(authResult, 'idTokenPayload.sub');
     this.expiresAt = expiresAt;
+    this.userInfo = userInfo;
 
     // navigate to the home route
     this.history.replace('/');

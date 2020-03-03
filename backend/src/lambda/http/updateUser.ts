@@ -13,9 +13,14 @@ const logger = createLogger('updateUser')
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const userIdFromPath = decodeURI(event.pathParameters.userId)
   const updatedUser: UpdateUserRequest = JSON.parse(event.body)
-  const currentUserId = getUserId(event);
-
+  logger.info('event before getUserId', {
+    userIdFromPath,
+    updatedUser,
+    event
+  })
+  
   try {
+    const currentUserId = getUserId(event);
     logger.info('inside updateUser', {
       userIdFromPath,
       updatedUser,
@@ -25,6 +30,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
     logger.info('old item in updateUser', oldUser);
 
     if (!oldUser) {
+      logger.info('no old user found, returning 404')
       return {
         statusCode: 404,
         body: ''
