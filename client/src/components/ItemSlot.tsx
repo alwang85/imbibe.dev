@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { ViewItem } from './ViewItem';
-import { EditItem } from './EditItem';
+import { WrappedEditItem } from './EditItem';
 import Auth from '../auth/Auth'
 import { Item } from '../types/Item'
 
@@ -33,7 +33,8 @@ export class ItemSlot extends React.PureComponent<ItemSlotProps, ItemSlotState> 
         {
           currentView === 'viewItem' ? 
             <ViewItem auth={this.props.auth} item={this.props.item} toggleEditItem={this.toggleEditItem} /> :
-            <EditItem auth={this.props.auth} item={this.props.item} toggleEditItem={this.toggleEditItem} />
+            // @ts-ignore
+            <WrappedEditItem auth={this.props.auth} item={this.props.item} toggleEditItem={this.toggleEditItem} />
         }
       </React.Fragment>
     )

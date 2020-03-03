@@ -5,7 +5,7 @@ import Axios from 'axios'
 import { UpdateUserRequest } from '../types/UpdateUserRequest';
 
 export async function getUser(idToken: string, userId: string): Promise<User> {
-  console.log('Fetching user')
+  console.log('Fetching user', `idToken: ${idToken} userId: ${userId}`)
 
   const response = await Axios.get(`${apiEndpoint}/users/${userId}`, {
     headers: {
@@ -14,7 +14,7 @@ export async function getUser(idToken: string, userId: string): Promise<User> {
     },
   })
   console.log('User:', response.data)
-  return response.data.item
+  return response.data
 }
 
 export async function createUser(
@@ -28,7 +28,7 @@ export async function createUser(
     }
   })
   console.log('Created User:', response.data)
-  return response.data.item
+  return response.data
 }
 
 export async function patchUser(

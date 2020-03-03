@@ -15,6 +15,7 @@ import {
 
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
 import Auth from '../auth/Auth'
+import UserContext from '../context/userContext';
 import { CreateItem } from './CreateItem'
 import { ItemSlot } from './ItemSlot'
 import { Item } from '../types/Item'
@@ -96,6 +97,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
         {
           items && items.length && items.map(item => (
             <ItemSlot 
+              key={item.id}
               auth={this.props.auth}
               item={item}
             />
@@ -130,6 +132,14 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
         {this.state.items.map((item, pos) => {
           return (
             <Grid.Row key={item.id}>
+              {
+                <UserContext.Consumer>
+                  {( props ) => {
+                    console.log('consumer props', props);
+                    return null;
+                  }}
+                </UserContext.Consumer>
+              }
               {/* <Grid.Column width={1} verticalAlign="middle">
                 <Checkbox
                   onChange={() => this.onItemCheck(pos)}

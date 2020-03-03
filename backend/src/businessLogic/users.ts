@@ -21,7 +21,7 @@ export async function createUser(
     userId: createUserRequest.userId,
     isProfilePublic: false,
     displayName: null,
-    categories: null
+    categories: []
   })
 }
 
