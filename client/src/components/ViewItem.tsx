@@ -16,7 +16,9 @@ import {
 } from 'semantic-ui-react'
 
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
+import { UserWrapper } from '../context/userContext'
 import Auth from '../auth/Auth'
+import { User } from '../types/User'
 import { Item } from '../types/Item'
 import { SubItem } from '../types/SubItem'
 
@@ -25,9 +27,11 @@ interface ToggleItemFunc {
 }
 
 interface ViewItemProps {
-  auth: Auth
+  crud: boolean
+  auth?: Auth
   item: Item
-  toggleEditItem: ToggleItemFunc
+  user: User
+  toggleEditItem?: ToggleItemFunc
 }
 
 interface ViewItemState {
@@ -47,10 +51,6 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
   state: ViewItemState = {
     ...initialViewItemState
   }
-
-  // onEditButtonClick = (itemId: string) => {
-  //   this.props.history.push(`/items/${itemId}/edit`)
-  // }
 
   toggleSubItemsTab = () => {
     console.log('toggle sub items called', this.state.subItemsTabOpen)
@@ -78,7 +78,7 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
 
   onItemDelete = async (itemId: string) => {
     try {
-      await deleteItem(this.props.auth.getIdToken(), itemId)
+      if(this.props.auth) await deleteItem(this.props.auth.getIdToken(), itemId)
     } catch {
       alert('Item deletion failed')
     }
@@ -93,15 +93,18 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
   }
 
   renderItem() {
-    const { title, description, id, subItems = [] } = this.props.item;
-    const { subItemsTabOpen, expandedSubItem, activeIndexs } = this.state;
-    console.log('subItemsTabOpen in render', subItemsTabOpen)
+    const { auth, item } = this.props;
+    const { title, description, id, subItems = [] } = item;
+    const currentlyLoggedInUser = auth && auth.getUserId();
+    const canEditItem = item.userId === currentlyLoggedInUser;
 
     const subItemPanels = subItems.map(subItem => ({
       key: subItem.id,
       title: subItem.title,
       content: subItem.description
     }));
+
+    const hasSubItems = subItems.length > 0;
     
     const Level1Content = (
       <div>
@@ -113,7 +116,7 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
       { key: 'panel-1', title: 'Subitems', content: { content: Level1Content } },
     ]
     
-    const AccordionExampleNested = () => (
+    const NestedSubitems = () => (
       <Accordion fluid panels={rootPanels} styled />
     )
 
@@ -125,22 +128,27 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
             {description}
           </Card.Description>
         </Card.Content>
-        <AccordionExampleNested />
-        <Card.Content>
-          <Button 
-            icon
-            onClick={this.props.toggleEditItem}
-          >
-            <Icon name='pencil' />
-          </Button>
-          <Button 
-            icon
-            onClick={() => this.onItemDelete(id)}
-          >
-            <Icon name='trash' />
-          </Button>
-        </Card.Content>
+        { hasSubItems && <NestedSubitems /> }
+        {
+          this.props.crud && canEditItem &&
+            <Card.Content>
+              <Button 
+                icon
+                onClick={this.props.toggleEditItem}
+              >
+                <Icon name='pencil' />
+              </Button>
+              <Button 
+                icon
+                onClick={() => this.onItemDelete(id)}
+              >
+                <Icon name='trash' />
+              </Button>
+            </Card.Content>
+        }
       </Card>
     )
   }
 }
+
+export const WrappedViewItem = UserWrapper(ViewItem);

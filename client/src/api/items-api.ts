@@ -1,7 +1,8 @@
+import Axios from 'axios'
 import { apiEndpoint } from '../config'
 import { Item } from '../types/Item';
+import get from 'lodash/get';
 import { CreateItemRequest } from '../types/CreateItemRequest';
-import Axios from 'axios'
 import { UpdateItemRequest } from '../types/UpdateItemRequest';
 
 export async function getItems(idToken: string): Promise<Item[]> {
@@ -55,19 +56,31 @@ export async function deleteItem(
   })
 }
 
-export async function getUploadUrl(
-  idToken: string,
-  itemId: string
-): Promise<string> {
-  const response = await Axios.post(`${apiEndpoint}/items/${itemId}/attachment`, '', {
+export async function getPublicItemsByDisplayName(
+  displayName: string,
+): Promise<Item[]> {
+  const response = await Axios.get(`${apiEndpoint}/items/public/${displayName}`, {
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${idToken}`
+      'Content-Type': 'application/json'
     }
   })
-  return response.data.uploadUrl
+
+  return response.data.items
 }
 
-export async function uploadFile(uploadUrl: string, file: Buffer): Promise<void> {
-  await Axios.put(uploadUrl, file)
+interface layoutItem {
+  items: Item[],
+  category: string
+}
+
+export async function getPublicLayoutByDisplayName(
+  displayName: string,
+): Promise<layoutItem[]> {
+  const response = await Axios.get(`${apiEndpoint}/layout/public/${displayName}`, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+
+  return response.data
 }
