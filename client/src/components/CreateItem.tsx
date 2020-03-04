@@ -5,6 +5,7 @@ import * as uuid from 'uuid';
 import * as React from 'react'
 import {
   Button,
+  Dropdown,
   Form,
   Input,
   TextArea,
@@ -14,12 +15,15 @@ import {
 
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
 import Auth from '../auth/Auth'
+import { UserWrapper } from '../context/userContext'
+import { User } from '../types/User'
 import { Item } from '../types/Item'
 import { SubItem } from '../types/SubItem'
 
 interface ItemsProps {
   auth: Auth
   position: any
+  user: User
 }
 
 interface ItemsState {
@@ -55,10 +59,9 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
     })
   }
 
-  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
+  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, data: any) => {
+    const value = data.type === 'checkbox' ? data.checked : data.value;
+    const name = data.name;
 
     this.setState({
       ...this.state,
@@ -107,18 +110,25 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
   }
 
   render() {
+    const categories = this.props.user.categories || [];
+    const categoryOptions = categories.map(category => ({
+      key: category.name,
+      text: category.name,
+      value: category.name,
+    }));
+
     return (
       <div>
         {
           this.state.showForm ? 
-          this.renderCreateItemInput() :
+          this.renderCreateItemInput(categoryOptions) :
           <Button attached={this.props.position} onClick={this.toggleForm}>Add Item</Button>
         }
       </div>
     )
   }
 
-  renderCreateItemInput() {
+  renderCreateItemInput(categoryOptions: any) {
     return (
       <Form>
         <Form.Field 
@@ -137,11 +147,12 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
           value={this.state.newItemDescription}
           onChange={this.handleInputChange}
         />
-        <Form.Field 
-          control={Input}
+        <Form.Field
+          control={Dropdown}
+          placeholder='Select Category'
           name='newItemCategory'
           label='category'
-          placeholder='category'
+          options={categoryOptions}
           value={this.state.newItemCategory}
           onChange={this.handleInputChange}
         />
@@ -204,3 +215,5 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
     )
   }
 }
+
+export const WrappedCreateItem = UserWrapper(CreateItem);

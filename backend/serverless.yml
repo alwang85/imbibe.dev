@@ -51,6 +51,7 @@ provider:
     USERS_TABLE: Imbibe-Users-${self:provider.stage}
     ITEMS_USERID_INDEX: Items_userId_Index
     ITEMS_ITEMID_INDEX: Items_itemId_Index
+    USERS_DISPLAYNAME_INDEX: Users_displayName_Index
     IMAGES_S3_BUCKET: imbibe-images-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
@@ -58,6 +59,37 @@ functions:
 
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
+
+  GetPublicItemsByDisplayName:
+    handler: src/lambda/http/getPublicItemsByUser.handler
+    events:
+      - http:
+          method: get
+          path: items/public/{displayName}
+          cors: true
+          authorizer: Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ITEMS_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}/index/${self:provider.environment.USERS_DISPLAYNAME_INDEX}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ITEMS_TABLE}/index/${self:provider.environment.ITEMS_USERID_INDEX}
+      - Effect: Allow
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+        Resource: "*"
 
   GetItems:
     handler: src/lambda/http/getItems.handler
@@ -160,6 +192,28 @@ functions:
           - xray:PutTraceSegments
           - xray:PutTelemetryRecords
         Resource: "*"
+
+  # GetUserPublicProfile:
+  #   handler: src/lambda/http/getPublicUser.handler
+  #   events:
+  #     - http:
+  #         method: get
+  #         path: users/public/{displayName}
+  #         cors: true
+  #   iamRoleStatements:
+  #     - Effect: Allow
+  #       Action:
+  #         - dynamodb:Query
+  #       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}
+  #     - Effect: Allow
+  #       Action:
+  #         - dynamodb:Query
+  #       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}/index/${self:provider.environment.USERS_DISPLAYNAME_INDEX}
+  #     - Effect: Allow
+  #       Action:
+  #         - xray:PutTraceSegments
+  #         - xray:PutTelemetryRecords
+  #       Resource: "*"
 
   GetUser:
     handler: src/lambda/http/getUser.handler
@@ -292,11 +346,20 @@ resources:
         AttributeDefinitions:
           - AttributeName: userId
             AttributeType: S
+          - AttributeName: displayName
+            AttributeType: S
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.USERS_TABLE}
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.USERS_DISPLAYNAME_INDEX}
+            KeySchema:
+            - AttributeName: displayName
+              KeyType: HASH
+            Projection:
+              ProjectionType: ALL
     RequestBodyValidator:
       Type: AWS::ApiGateway::RequestValidator
       Properties:

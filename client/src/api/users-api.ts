@@ -43,3 +43,14 @@ export async function patchUser(
     }
   })
 }
+
+export async function getPublicUser(
+  displayName: string,
+): Promise<void> {
+  await Axios.get(`${apiEndpoint}/users/${displayName}`, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+

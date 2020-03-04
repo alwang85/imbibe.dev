@@ -10,7 +10,8 @@ export class UserAccess {
 
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
-    private readonly usersTable = process.env.USERS_TABLE) {
+    private readonly usersTable = process.env.USERS_TABLE,
+    private readonly usersDisplayNameIndex = process.env.USERS_DISPLAYNAME_INDEX) {
   }
 
   async getUser(userId: String): Promise<User> {
@@ -20,6 +21,25 @@ export class UserAccess {
       KeyConditionExpression: 'userId = :userId',
       ExpressionAttributeValues: {
         ':userId': userId,
+      },
+      ScanIndexForward: false
+    }).promise()
+
+    console.log('obtained user', result)
+
+    const item = result.Items
+    console.log('returning user item', item[0]);
+    return item[0] as User
+  }
+
+  async getUserByDisplayName(displayName: String): Promise<User> {
+    console.log('incoming displayName in getUserByDisplayName', displayName)
+    const result = await this.docClient.query({
+      TableName: this.usersTable,
+      IndexName: this.usersDisplayNameIndex,
+      KeyConditionExpression: 'displayName = :displayName',
+      ExpressionAttributeValues: {
+        ':displayName': displayName,
       },
       ScanIndexForward: false
     }).promise()
