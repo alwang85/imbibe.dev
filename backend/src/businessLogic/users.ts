@@ -10,6 +10,12 @@ export async function getUserById(
   return userAccess.getUser(userId)
 }
 
+export async function getUserByDisplayName(
+  displayName: string,
+): Promise<User> {
+  return userAccess.getUserByDisplayName(displayName)
+}
+
 export async function createUser(
   createUserRequest: CreateUserRequest,
 ): Promise<User> {
@@ -20,7 +26,7 @@ export async function createUser(
   return await userAccess.createUser({
     userId: createUserRequest.userId,
     isProfilePublic: false,
-    displayName: null,
+    displayName: "none",
     categories: []
   })
 }

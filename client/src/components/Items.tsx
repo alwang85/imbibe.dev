@@ -16,7 +16,7 @@ import {
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
 import Auth from '../auth/Auth'
 import UserContext from '../context/userContext';
-import { CreateItem } from './CreateItem'
+import { WrappedCreateItem } from './CreateItem'
 import { ItemSlot } from './ItemSlot'
 import { Item } from '../types/Item'
 
@@ -93,7 +93,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
     return (
       <div>
         <Header as="h1">TODOs</Header>
-        {<CreateItem auth={auth} position="top"/>}
+        {<WrappedCreateItem auth={auth} position="top"/>}
         {
           items && items.length && items.map(item => (
             <ItemSlot 
@@ -103,7 +103,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
             />
           ))
         }
-        {<CreateItem auth={auth} position="bottom"/>}
+        {<WrappedCreateItem auth={auth} position="bottom"/>}
       </div>
     )
   }

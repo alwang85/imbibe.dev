@@ -64,10 +64,9 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
     }
   }
 
-  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
+  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, data: any) => {
+    const value = data.type === 'checkbox' ? data.checked : data.value;
+    const name = data.name;
 
     this.setState({
       ...this.state,
@@ -179,11 +178,11 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
     return (
       <Form>
         <Form.Field 
-          control={Input}
+          control={Checkbox}
           name='isProfilePublic'
           label='is Profile Public'
-          placeholder='title'
-          value={this.state.isProfilePublic}
+          checked={this.state.isProfilePublic}
+          placeholder={false}
           onChange={this.handleInputChange}
         />
         <Form.Field 
@@ -228,7 +227,7 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
                           control={Checkbox}
                           name='currentlyEditedCategoryPublic'
                           label='publically viewable category'
-                          value={this.state.currentlyEditedCategoryPublic}
+                          checked={this.state.currentlyEditedCategoryPublic}
                           placeholder={false}
                           onChange={this.handleInputChange}
                         />
@@ -242,7 +241,7 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
                         <Card.Content>
                           <Card.Header>name: {category.name}</Card.Header>
                           <Card.Description>order: {category.order}</Card.Description>
-                          <Card.Description>isCategoryPublic: {category.public}</Card.Description>
+                          <Card.Description>isCategoryPublic: {(category.public).toString()}</Card.Description>
                         </Card.Content>
                         <Card.Content>
                           <Button onClick={()=> this.setCurrentlyEditedCategory(category.name)}>Edit this SubItem</Button>
@@ -278,7 +277,7 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
               control={Checkbox}
               name='currentlyEditedCategoryPublic'
               label='publically viewable category'
-              value={this.state.currentlyEditedCategoryPublic}
+              checked={this.state.currentlyEditedCategoryPublic}
               placeholder={false}
               onChange={this.handleInputChange}
             />

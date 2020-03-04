@@ -72,23 +72,13 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
     })
   }
 
-  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
+  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, data: any) => {
+    const value = data.type === 'checkbox' ? data.checked : data.value;
+    const name = data.name;
 
     this.setState({
       ...this.state,
       [name]: value
-    });
-  }
-
-  handleDropdownChange = (event: React.SyntheticEvent<HTMLElement, Event>, data: any) => {
-    console.log('dropdwon data', data)
-    console.log('dropdown event', event)
-
-    this.setState({
-      'newItemCategory': data.value
     });
   }
 
@@ -236,7 +226,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
           label='category'
           options={categoryOptions}
           value={this.state.newItemCategory}
-          onChange={this.handleDropdownChange}
+          onChange={this.handleInputChange}
         />
         <Form.Field 
           control={Input}

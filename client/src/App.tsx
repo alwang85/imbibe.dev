@@ -106,7 +106,7 @@ export default class App extends Component<AppProps, AppState> {
           />
           <Route path="/login" exact><LogIn auth={this.props.auth}/></Route>
 
-          {/* <Route path="/public/:nickname">
+          {/* <Route path="/public/:displayName">
             <PublicProfileComponent />
           </Route> */}
           <PrivateRoute path="/dashboard" auth={this.props.auth}>
