@@ -67,7 +67,35 @@ functions:
           method: get
           path: items/public/{displayName}
           cors: true
-          authorizer: Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ITEMS_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}/index/${self:provider.environment.USERS_DISPLAYNAME_INDEX}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ITEMS_TABLE}/index/${self:provider.environment.ITEMS_USERID_INDEX}
+      - Effect: Allow
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+        Resource: "*"
+  GetPublicLayoutByDisplayName:
+    handler: src/lambda/http/getPublicLayoutByUser.handler
+    events:
+      - http:
+          method: get
+          path: layout/public/{displayName}
+          cors: true
     iamRoleStatements:
       - Effect: Allow
         Action:

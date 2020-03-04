@@ -8,6 +8,7 @@ import { NotFound } from './components/NotFound'
 import { Items } from './components/Items'
 import { LogIn } from './components/LogIn'
 import { Profile } from './components/Profile'
+import { PublicItems } from './components/PublicItems'
 import UserContext from './context/userContext'
 import { User, emptyUser } from './types/User';
 import GetOrCreateUser from './components/GetOrCreateUser';
@@ -71,6 +72,19 @@ export default class App extends Component<AppProps, AppState> {
     )
   }
 
+  getPublicRoute = () => (
+    <Route
+      path="/public/:displayName"
+      children={({ match }) => (
+        <PublicItems 
+          auth={this.props.auth}
+          history={this.props.history}
+          match={match}  
+        />
+      )}
+    />
+  )
+
   generateCurrentPage() {
     const unAuthSwitch = (
       <Switch>
@@ -81,6 +95,7 @@ export default class App extends Component<AppProps, AppState> {
             return <NotFound />
           }}
         />
+        { this.getPublicRoute() }
         <Route component={NotFound} />
       </Switch>
     );
@@ -106,9 +121,8 @@ export default class App extends Component<AppProps, AppState> {
           />
           <Route path="/login" exact><LogIn auth={this.props.auth}/></Route>
 
-          {/* <Route path="/public/:displayName">
-            <PublicProfileComponent />
-          </Route> */}
+          { this.getPublicRoute() }
+          
           <PrivateRoute path="/dashboard" auth={this.props.auth}>
             <Items auth={this.props.auth} />
           </PrivateRoute>
