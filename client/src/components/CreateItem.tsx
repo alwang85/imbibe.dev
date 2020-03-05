@@ -10,6 +10,7 @@ import {
   Input,
   TextArea,
   Card,
+  Label,
   CardContent
 } from 'semantic-ui-react'
 
@@ -24,6 +25,7 @@ interface ItemsProps {
   auth: Auth
   position: any
   user: User
+  categoryName: string
 }
 
 interface ItemsState {
@@ -122,7 +124,12 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
         {
           this.state.showForm ? 
           this.renderCreateItemInput(categoryOptions) :
-          <Button attached={this.props.position} onClick={this.toggleForm}>Add Item</Button>
+          <Button 
+            attached={this.props.position}
+            onClick={this.toggleForm}
+          >
+            Add Item ({this.props.categoryName})
+          </Button>
         }
       </div>
     )

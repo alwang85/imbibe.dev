@@ -93,9 +93,10 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
   }
 
   renderItem() {
-    const { auth, item } = this.props;
+    const { auth, item, crud } = this.props;
     const { title, description, id, subItems = [] } = item;
     const currentlyLoggedInUser = auth && auth.getUserId();
+
     const canEditItem = item.userId === currentlyLoggedInUser;
 
     const subItemPanels = subItems.map(subItem => ({
@@ -130,7 +131,7 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
         </Card.Content>
         { hasSubItems && <NestedSubitems /> }
         {
-          this.props.crud && canEditItem &&
+          crud && canEditItem &&
             <Card.Content>
               <Button 
                 icon

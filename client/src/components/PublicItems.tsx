@@ -14,7 +14,7 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { getPublicLayoutByDisplayName } from '../api/items-api'
+import { getPublicLayoutByDisplayName } from '../api/layout-api'
 import Auth from '../auth/Auth'
 import UserContext from '../context/userContext';
 import { WrappedCreateItem } from './CreateItem'
@@ -80,13 +80,15 @@ export class PublicItems extends React.PureComponent<PublicItemsProps, PublicIte
     return (
       <div>
         <Header as="h1"></Header>
-        <Grid columns={3} divided>
+        <Grid columns={3} divided stackable>
           <Grid.Row>
             {
               publicLayout && publicLayout.length && publicLayout.map(categoryItem => (
                 <CategoryColumn 
                   items={categoryItem.items}
                   categoryName={categoryItem.category}
+                  crud={false}
+                  auth={this.props.auth}
                 />
               ))
             }

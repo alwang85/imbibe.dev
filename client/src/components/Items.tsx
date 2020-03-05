@@ -13,31 +13,31 @@ import {
   Loader
 } from 'semantic-ui-react'
 
+import { getLayoutByUserId } from '../api/layout-api'
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
 import Auth from '../auth/Auth'
-import UserContext from '../context/userContext';
 import { WrappedCreateItem } from './CreateItem'
+import { CategoryColumn } from '../components/CategoryColumn'
 import { ItemSlot } from './ItemSlot'
 import { Item } from '../types/Item'
+
+interface layoutItem {
+  items: Item[],
+  category: string
+}
 
 interface ItemsProps {
   auth: Auth
 }
 
 interface ItemsState {
+  layout: layoutItem[]
   items: Item[]
-  newItemTitle: string
-  newItemDescription: string
-  newItemUrl: string
-  newItemCategory: string
   loadingItems: boolean
 }
 const initialItemsState = {
+  layout: [],
   items: [],
-  newItemTitle: '',
-  newItemDescription: '',
-  newItemUrl: '',
-  newItemCategory: '',
   loadingItems: true,
 }
 
@@ -46,39 +46,14 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
     ...initialItemsState
   }
 
-  onItemCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
-    try {
-      const newItem = await createItem(this.props.auth.getIdToken(), {
-        title: this.state.newItemTitle,
-        description: this.state.newItemDescription,
-        category: this.state.newItemCategory,
-        url: this.state.newItemUrl,
-      })
-      this.setState({
-        ...initialItemsState,
-        items: [...this.state.items, newItem],
-      })
-    } catch {
-      alert('Item creation failed')
-    }
-  }
-
-  onItemDelete = async (itemId: string) => {
-    try {
-      await deleteItem(this.props.auth.getIdToken(), itemId)
-      this.setState({
-        items: this.state.items.filter(item => item.id != itemId)
-      })
-    } catch {
-      alert('Item deletion failed')
-    }
-  }
-
   async componentDidMount() {
     try {
-      const items = await getItems(this.props.auth.getIdToken())
+      const layout = await getLayoutByUserId(
+        this.props.auth.getIdToken(),
+        this.props.auth.getUserId(),
+      )
       this.setState({
-        items,
+        layout,
         loadingItems: false
       })
     } catch (e) {
@@ -88,86 +63,40 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
 
   render() {
     const { auth } = this.props;
-    const { items } = this.state;
+    const { layout } = this.state;
 
-    return (
-      <div>
-        <Header as="h1">TODOs</Header>
-        {<WrappedCreateItem auth={auth} position="top"/>}
-        {
-          items && items.length && items.map(item => (
-            <ItemSlot 
-              key={item.id}
-              auth={this.props.auth}
-              item={item}
-            />
-          ))
-        }
-        {<WrappedCreateItem auth={auth} position="bottom"/>}
-      </div>
-    )
-  }
-
-  renderItems() {
     if (this.state.loadingItems) {
       return this.renderLoading()
     }
 
-    return this.renderItemsList()
+    return (
+      <div>
+        <Header as="h1">Items</Header>
+        <Grid columns={3} divided stackable>
+          <Grid.Row>
+            {
+              layout && layout.length && layout.map(categoryItem => (
+                <CategoryColumn 
+                  auth={this.props.auth}
+                  items={categoryItem.items}
+                  categoryName={categoryItem.category}
+                  crud={true}
+                />
+              ))
+            }
+          </Grid.Row>
+        </Grid>
+      </div>
+    )
   }
 
   renderLoading() {
     return (
       <Grid.Row>
         <Loader indeterminate active inline="centered">
-          Loading TODOs
+          Loading Items
         </Loader>
       </Grid.Row>
-    )
-  }
-
-  renderItemsList() {
-    return (
-      <Grid padded>
-        {this.state.items.map((item, pos) => {
-          return (
-            <Grid.Row key={item.id}>
-              {
-                <UserContext.Consumer>
-                  {( props ) => {
-                    console.log('consumer props', props);
-                    return null;
-                  }}
-                </UserContext.Consumer>
-              }
-              {/* <Grid.Column width={1} verticalAlign="middle">
-                <Checkbox
-                  onChange={() => this.onItemCheck(pos)}
-                  checked={item.done}
-                />
-              </Grid.Column> */}
-              <Grid.Column width={10} verticalAlign="middle">
-                {item.title}
-              </Grid.Column>
-              <Grid.Column width={3} floated="right">
-                {item.description}
-              </Grid.Column>
-              <Grid.Column width={1} floated="right">
-                <Button
-                  icon
-                  color="red"
-                  onClick={() => this.onItemDelete(item.id)}
-                >
-                  <Icon name="delete" />
-                </Button>
-              </Grid.Column>
-              <Grid.Column width={16}>
-                <Divider />
-              </Grid.Column>
-            </Grid.Row>
-          )
-        })}
-      </Grid>
     )
   }
 }

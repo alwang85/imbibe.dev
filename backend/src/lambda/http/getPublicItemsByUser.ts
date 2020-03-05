@@ -28,16 +28,22 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
     if(user.isProfilePublic) {
       const userCategories = user.categories || [];
       logger.info('userCategories', userCategories)
+
       const userPublicCategoryNames = userCategories
         .filter(category => category.public === true)
+        .sort((a, b) => {
+          return a.order - b.order;
+        })
         .map(category => category.name);
       // fetches all items and return only the categories that are public
       logger.info('userPublicCategoryNames', userPublicCategoryNames)
 
       const items = await getAllItems(user.userId);
       logger.info('all items obtained here', items);
+
       const filteredItems = items.filter(item => userPublicCategoryNames.includes(item.category)) || [];
       logger.info('filtered items', filteredItems);
+      
       return {
         statusCode: 200,
         body: JSON.stringify({

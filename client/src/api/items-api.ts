@@ -56,6 +56,7 @@ export async function deleteItem(
   })
 }
 
+// currently unused
 export async function getPublicItemsByDisplayName(
   displayName: string,
 ): Promise<Item[]> {
@@ -71,16 +72,4 @@ export async function getPublicItemsByDisplayName(
 interface layoutItem {
   items: Item[],
   category: string
-}
-
-export async function getPublicLayoutByDisplayName(
-  displayName: string,
-): Promise<layoutItem[]> {
-  const response = await Axios.get(`${apiEndpoint}/layout/public/${displayName}`, {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-
-  return response.data
 }

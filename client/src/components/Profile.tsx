@@ -268,7 +268,7 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
             <Form.Field 
               control={Input}
               name='currentlyEditedCategoryOrder'
-              label='category display order'
+              label='category display priority, from left to right'
               value={this.state.currentlyEditedCategoryOrder}
               placeholder={100}
               onChange={this.handleInputChange}
