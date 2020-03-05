@@ -16,9 +16,9 @@ import {
 
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
 import { getLayoutByUserId } from '../api/layout-api'
-import Auth from '../auth/Auth'
 import { UserWrapper } from '../context/userContext'
 import { LayoutWrapper } from '../context/layoutContext'
+import { AuthWrapper } from '../context/auth0-context';
 import { User } from '../types/User'
 import { Item } from '../types/Item'
 import { SubItem } from '../types/SubItem'
@@ -29,11 +29,13 @@ interface layoutItem {
 }
 
 interface ItemsProps {
-  auth: Auth
   position: any
   user: User
   setLayout: (layout: layoutItem[]) => void
   categoryName: string
+  // below comes from AuthWrapper HoC
+  idToken: string,
+  userId: string,
 }
 
 interface ItemsState {
@@ -104,7 +106,7 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
     event.preventDefault();
     try {
       console.log('this.state in onItemCreate', this.state);
-      const newItem = await createItem(this.props.auth.getIdToken(), {
+      const newItem = await createItem(this.props.idToken, {
         title: this.state.newItemTitle,
         description: this.state.newItemDescription,
         category: this.state.newItemCategory,
@@ -113,8 +115,8 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
       });
 
       const updatedLayout = await getLayoutByUserId(
-        this.props.auth.getIdToken(),
-        this.props.auth.getUserId()
+        this.props.idToken,
+        this.props.userId
       );
 
       this.props.setLayout(updatedLayout)
@@ -244,4 +246,4 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
   }
 }
 
-export const WrappedCreateItem = LayoutWrapper(UserWrapper(CreateItem));
+export const WrappedCreateItem = AuthWrapper(LayoutWrapper(UserWrapper(CreateItem)));

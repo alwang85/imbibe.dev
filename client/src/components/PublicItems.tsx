@@ -15,16 +15,11 @@ import {
 } from 'semantic-ui-react'
 
 import { getPublicLayoutByDisplayName } from '../api/layout-api'
-import Auth from '../auth/Auth'
-import UserContext from '../context/userContext';
 import { LayoutWrapper } from '../context/layoutContext'
-import { WrappedCreateItem } from './CreateItem'
 import { CategoryColumn } from '../components/CategoryColumn'
-import { ItemSlot } from './ItemSlot'
 import { Item } from '../types/Item'
 
 interface PublicItemsProps {
-  auth: Auth
   history: any
   match: any
   layout: layoutItem[]
@@ -91,7 +86,6 @@ export class PublicItems extends React.PureComponent<PublicItemsProps, PublicIte
                   items={categoryItem.items}
                   categoryName={categoryItem.category}
                   crud={false}
-                  auth={this.props.auth}
                 />
               ))
             }

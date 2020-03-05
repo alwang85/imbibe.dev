@@ -5,15 +5,12 @@ import Axios from 'axios'
 import { UpdateUserRequest } from '../types/UpdateUserRequest';
 
 export async function getUser(idToken: string, userId: string): Promise<User> {
-  console.log('Fetching user', `idToken: ${idToken} userId: ${userId}`)
-
   const response = await Axios.get(`${apiEndpoint}/users/${userId}`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
     },
   })
-  console.log('User:', response.data)
   return response.data
 }
 

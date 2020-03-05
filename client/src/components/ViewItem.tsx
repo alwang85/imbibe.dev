@@ -17,8 +17,7 @@ import {
 
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
 import { UserWrapper } from '../context/userContext'
-import Auth from '../auth/Auth'
-import { User } from '../types/User'
+import { AuthWrapper } from '../context/auth0-context';
 import { Item } from '../types/Item'
 import { SubItem } from '../types/SubItem'
 
@@ -28,10 +27,12 @@ interface ToggleItemFunc {
 
 interface ViewItemProps {
   crud: boolean
-  auth?: Auth
   item: Item
-  user: User
   toggleEditItem?: ToggleItemFunc
+  // below comes from AuthWrapper HoC
+  isAuthenticated: any,
+  idToken: string,
+  userId: string
 }
 
 interface ViewItemState {
@@ -78,7 +79,7 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
 
   onItemDelete = async (itemId: string) => {
     try {
-      if(this.props.auth) await deleteItem(this.props.auth.getIdToken(), itemId)
+      if(this.props.isAuthenticated) await deleteItem(this.props.idToken, itemId)
     } catch {
       alert('Item deletion failed')
     }
@@ -93,9 +94,9 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
   }
 
   renderItem() {
-    const { auth, item, crud } = this.props;
+    const { item, crud, userId } = this.props;
     const { title, description, id, subItems = [] } = item;
-    const currentlyLoggedInUser = auth && auth.getUserId();
+    const currentlyLoggedInUser = userId;
 
     const canEditItem = item.userId === currentlyLoggedInUser;
 
@@ -152,4 +153,4 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
   }
 }
 
-export const WrappedViewItem = UserWrapper(ViewItem);
+export const WrappedViewItem = AuthWrapper(UserWrapper(ViewItem));
