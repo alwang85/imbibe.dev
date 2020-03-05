@@ -22,6 +22,7 @@ import { Category } from '../types/Category'
 
 interface ItemsProps {
   auth: Auth
+  setUser: (user: User, forceUpdate: boolean) => void
 }
 
 interface ItemsState {
@@ -56,7 +57,6 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
         isProfilePublic, displayName, categories
       } = await getUser(idToken, userId)
       this.setState({
-        // ...this.state,
         isProfilePublic, displayName, categories
       })
     } catch (e) {
@@ -165,6 +165,7 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
       )
       
       console.log('item update success', newUser)
+      this.props.setUser(newUser, true);
 
     } catch {
       alert('Item creation failed')

@@ -35,13 +35,15 @@ export async function patchUser(
   idToken: string,
   userId: string,
   updatedUser: UpdateUserRequest
-): Promise<void> {
-  await Axios.patch(`${apiEndpoint}/users/${userId}`, JSON.stringify(updatedUser), {
+): Promise<User> {
+  const response = await Axios.patch(`${apiEndpoint}/users/${userId}`, JSON.stringify(updatedUser), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
     }
   })
+
+  return response.data
 }
 
 export async function getPublicUser(

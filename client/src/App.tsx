@@ -39,9 +39,9 @@ export default class App extends Component<AppProps, AppState> {
     };
   }
 
-  setUser = (user: User) => {
+  setUser = (user: User, forceUpdate?: boolean) => {
     console.log('user in setUser', user)
-    if(this.state.isInitialAuthenticatedLoad) {
+    if(this.state.isInitialAuthenticatedLoad || forceUpdate) {
       this.setState({
         user: {
           ...user,
@@ -92,6 +92,7 @@ export default class App extends Component<AppProps, AppState> {
           path="/"
           exact
           render={props => {
+            // TODO update to a neighberhood friendly welcome
             return <NotFound />
           }}
         />
@@ -127,7 +128,7 @@ export default class App extends Component<AppProps, AppState> {
             <Items auth={this.props.auth} />
           </PrivateRoute>
           <PrivateRoute path="/profile" auth={this.props.auth}>
-            <Profile auth={this.props.auth} />
+            <Profile auth={this.props.auth} setUser={this.setUser} />
           </PrivateRoute>
           <Route component={NotFound} />
         </Switch>

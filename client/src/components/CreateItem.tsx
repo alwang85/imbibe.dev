@@ -188,6 +188,7 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
           </Card.Content>
           {
             <Card.Content>
+              <Card.Header>Add Subitem</Card.Header>
               <Form.Field 
                 control={Input}
                 name='newSubItemTitle'
