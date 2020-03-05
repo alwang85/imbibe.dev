@@ -1,16 +1,17 @@
 import * as React from 'react'
-import Auth from '../auth/Auth'
 import { Button } from 'semantic-ui-react'
 
+import { AuthWrapper } from '../context/auth0-context';
+
 interface LogInProps {
-  auth: Auth
+  loginWithRedirect: any
 }
 
 interface LogInState {}
 
 export class LogIn extends React.PureComponent<LogInProps, LogInState> {
   onLogin = () => {
-    this.props.auth.login()
+    this.props.loginWithRedirect()
   }
 
   render() {
@@ -25,3 +26,5 @@ export class LogIn extends React.PureComponent<LogInProps, LogInState> {
     )
   }
 }
+
+export const WrappedLogIn = AuthWrapper(LogIn);

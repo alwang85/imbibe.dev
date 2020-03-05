@@ -1,38 +1,34 @@
 import React, { Component } from 'react'
 
-import Auth from '../auth/Auth'
-import UserContext from '../context/userContext';
+import { AuthWrapper } from '../context/auth0-context';
 import { getUser, createUser } from '../api/users-api'
-import { User, emptyUser } from '../types/User'
+import { User } from '../types/User'
 
 export interface GetOrCreateUserProps {
-  auth: Auth
   isInitialAuthenticatedLoad: boolean
+  // the below comes from AuthWrapper HoC
   setUser: (user: User) => void
+  isAuthenticated?: boolean,
+  idToken: string,
+  userId: string,
 }
 
 export interface GetOrCreateUserState {
-  user: User
 }
 
 export default class GetOrCreateUser extends Component<GetOrCreateUserProps, GetOrCreateUserState> {
   constructor(props: GetOrCreateUserProps) {
     super(props)
-
-    this.state = {
-      user: emptyUser,
-    }
   }
 
   async componentWillMount() {
-    if (this.props.auth.isAuthenticated()) {
+    if (this.props.isAuthenticated) {
       console.log('app was authenticated')
-      const idToken = this.props.auth.getIdToken();
-      const userId = this.props.auth.getUserId();
-      // const userInfo = this.props.auth.getUserInfo();
+      const { idToken, userId } = this.props;
+      
       try {
         const currentUser = await getUser(idToken, userId);
-        console.log('existing user', currentUser);
+        // console.log('existing user', currentUser);
         if(this.props.isInitialAuthenticatedLoad) {
           if (!currentUser) {
             const newUser = await createUser(idToken, { userId })
@@ -54,3 +50,5 @@ export default class GetOrCreateUser extends Component<GetOrCreateUserProps, Get
     return null
   }
 }
+
+export const WrappedGetOrCreateUser = AuthWrapper(GetOrCreateUser);

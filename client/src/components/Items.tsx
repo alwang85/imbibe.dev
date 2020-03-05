@@ -16,8 +16,8 @@ import {
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
 import { getLayoutByUserId } from '../api/layout-api'
 import { LayoutWrapper } from '../context/layoutContext'
-import Auth from '../auth/Auth'
 import { CategoryColumn } from '../components/CategoryColumn'
+import { AuthWrapper } from '../context/auth0-context';
 import { Item } from '../types/Item'
 
 interface layoutItem {
@@ -26,9 +26,11 @@ interface layoutItem {
 }
 
 interface ItemsProps {
-  auth: Auth
   layout: layoutItem[]
-  setLayout: (layout: layoutItem[]) => void
+  setLayout: (layout: layoutItem[]) => void,
+  // the following comes from AuthWrapper HoC
+  idToken: string,
+  userId: string
 }
 
 interface ItemsState {
@@ -46,8 +48,8 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
   async componentDidMount() {
     try {
       const layout = await getLayoutByUserId(
-        this.props.auth.getIdToken(),
-        this.props.auth.getUserId(),
+        this.props.idToken,
+        this.props.userId,
       )
 
       this.props.setLayout(layout)
@@ -61,7 +63,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
   }
 
   render() {
-    const { auth, layout } = this.props;
+    const { layout } = this.props;
 
     if (this.state.loadingItems) {
       return this.renderLoading()
@@ -75,7 +77,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
             {
               layout && layout.length && layout.map(categoryItem => (
                 <CategoryColumn 
-                  auth={this.props.auth}
+                  key={categoryItem.category}
                   items={categoryItem.items}
                   categoryName={categoryItem.category}
                   crud={true}
@@ -99,4 +101,4 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
   }
 }
 
-export const WrappedItems = LayoutWrapper(Items)
+export const WrappedItems = AuthWrapper(LayoutWrapper(Items))

@@ -1,13 +1,17 @@
 import React, { Component } from 'react'
 import { Link, Route, Router, Switch } from 'react-router-dom'
 import { Grid, Menu, Segment } from 'semantic-ui-react'
+import { AuthWrapper } from '../context/auth0-context';
 
-import Auth from '../auth/Auth'
 export interface NavProps {}
 
 export interface NavProps {
-  auth: Auth
   history: any
+  // sadly HOC's can't read the types by default, unlike hooks? Or so I recall 
+  userInfo: any,
+  loginWithRedirect: any,
+  logout: any,
+  isAuthenticated: any,
 }
 
 export interface NavState {}
@@ -15,17 +19,6 @@ export interface NavState {}
 export default class Nav extends Component<NavProps, NavState> {
   constructor(props: NavProps) {
     super(props)
-
-    this.handleLogin = this.handleLogin.bind(this)
-    this.handleLogout = this.handleLogout.bind(this)
-  }
-
-  handleLogin() {
-    this.props.auth.login()
-  }
-
-  handleLogout() {
-    this.props.auth.logout()
   }
 
   render() {
@@ -37,7 +30,7 @@ export default class Nav extends Component<NavProps, NavState> {
   }
 
   generateMenu() {
-    const isAuthenticated = this.props.auth.isAuthenticated();
+    const { isAuthenticated } = this.props;
     return (
       <Menu>
         <Menu.Item name="home">
@@ -62,23 +55,20 @@ export default class Nav extends Component<NavProps, NavState> {
   }
 
   logInLogOutButton() {
-    if (this.props.auth.isAuthenticated()) {
-      // this block and nav code should be in its own component
-      // const currentUser = getCurrentUser();
-      
-
-
+    if (this.props.userInfo) {
       return (
-        <Menu.Item name="logout" onClick={this.handleLogout}>
+        <Menu.Item name="logout" onClick={this.props.logout}>
           Log Out
         </Menu.Item>
       )
     } else {
       return (
-        <Menu.Item name="login" onClick={this.handleLogin}>
+        <Menu.Item name="login" onClick={this.props.loginWithRedirect}>
           Log In
         </Menu.Item>
       )
     }
   }
 }
+
+export const WrappedNav = AuthWrapper(Nav);

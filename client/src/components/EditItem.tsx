@@ -17,7 +17,7 @@ import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
 import { getLayoutByUserId } from '../api/layout-api'
 import { UserWrapper } from '../context/userContext'
 import { LayoutWrapper } from '../context/layoutContext'
-import Auth from '../auth/Auth'
+import { AuthWrapper } from '../context/auth0-context';
 import { User } from '../types/User'
 import { Item } from '../types/Item'
 import { SubItem } from '../types/SubItem'
@@ -32,11 +32,15 @@ interface ToggleItemFunc {
 }
 
 interface ItemsProps {
-  auth: Auth
   item: Item,
   toggleEditItem: ToggleItemFunc
+  // the below is from User HoC
   user: User
+  // the below is from Layout HoC
   setLayout: (layout: layoutItem[]) => void
+  // the below is from Auth HoC
+  userId: string
+  idToken: string
 }
 
 interface ItemsState {
@@ -173,7 +177,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
     try {
       console.log('this.state in onItemUpdate', this.state);
       const newItem = await patchItem(
-        this.props.auth.getIdToken(),
+        this.props.idToken,
         this.props.item.id,
         {
           ...this.props.item,
@@ -188,8 +192,8 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
       console.log('item update success', newItem)
 
       const updatedLayout = await getLayoutByUserId(
-        this.props.auth.getIdToken(),
-        this.props.auth.getUserId()
+        this.props.idToken,
+        this.props.userId
       );
 
       this.props.setLayout(updatedLayout)
@@ -356,4 +360,4 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
   }
 }
 
-export const WrappedEditItem = LayoutWrapper(UserWrapper(EditItem));
+export const WrappedEditItem = AuthWrapper(LayoutWrapper(UserWrapper(EditItem)));

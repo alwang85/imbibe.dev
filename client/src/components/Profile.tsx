@@ -16,13 +16,15 @@ import {
 } from 'semantic-ui-react'
 
 import { getUser, patchUser } from '../api/users-api'
-import Auth from '../auth/Auth'
+import { AuthWrapper } from '../context/auth0-context';
 import { User } from '../types/User'
 import { Category } from '../types/Category'
 
 interface ItemsProps {
-  auth: Auth
-  setUser: (user: User, forceUpdate: boolean) => void
+  setUser: (user: User, forceUpdate: boolean) => void,
+  // the below comes from AuthWrapper HoC
+  idToken: string,
+  userId: string,
 }
 
 interface ItemsState {
@@ -48,9 +50,7 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
   }
 
   async componentDidMount() {
-    const { auth } = this.props;
-    const userId = auth.getUserId();
-    const idToken = auth.getIdToken();
+    const { idToken, userId } = this.props;
 
     try {
       const {
@@ -154,10 +154,10 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
     try {
       console.log('this.state in onUserUpdate', this.state);
       const newUser = await patchUser(
-        this.props.auth.getIdToken(),
-        this.props.auth.getUserId(),
+        this.props.idToken,
+        this.props.userId,
         {
-          userId: this.props.auth.getUserId(),
+          userId: this.props.userId,
           isProfilePublic: this.state.isProfilePublic,
           displayName: this.state.displayName || null,
           categories: this.state.categories
@@ -173,7 +173,6 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
   }
 
   render() {
-    const { auth } = this.props;
     const { isProfilePublic, displayName, categories } = this.state;
 
     return (
@@ -293,3 +292,5 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
   }
 
 }
+
+export const WrappedProfile = AuthWrapper(Profile)

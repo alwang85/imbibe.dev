@@ -2,24 +2,25 @@ import React, { Component } from 'react'
 import { Link, Route, Router, Switch, Redirect } from 'react-router-dom'
 import { Grid, Menu, Segment } from 'semantic-ui-react'
 
-import Auth from './auth/Auth'
-import Nav from './components/Nav';
+import { WrappedNav } from './components/Nav';
 import { NotFound } from './components/NotFound'
 import { WrappedItems } from './components/Items'
-import { LogIn } from './components/LogIn'
-import { Profile } from './components/Profile'
+import { WrappedLogIn } from './components/LogIn'
+import { WrappedProfile } from './components/Profile'
 import { WrappedPublicItems } from './components/PublicItems'
 import UserContext from './context/userContext'
 import LayoutContext from './context/layoutContext'
 import { User, emptyUser } from './types/User';
 import { Item } from './types/Item'
-import GetOrCreateUser from './components/GetOrCreateUser';
+import { WrappedGetOrCreateUser } from './components/GetOrCreateUser';
 
 export interface AppProps {}
 
 export interface AppProps {
-  auth: Auth
-  history: any
+  history: any,
+  // the below comes from Auth Wrapper in routing.tsx
+  isAuthenticated?: boolean
+  idToken: string,
 }
 
 interface layoutItem {
@@ -59,7 +60,7 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   setUser = (user: User, forceUpdate?: boolean) => {
-    console.log('user in setUser', user)
+    // console.log('user in setUser', user)
     if(this.state.isInitialAuthenticatedLoad || forceUpdate) {
       this.setState({
         userState: {
@@ -90,7 +91,7 @@ export default class App extends Component<AppProps, AppState> {
               <Grid.Column width={16}>
                 <Router history={this.props.history}>
                   <React.Fragment>
-                    <Nav auth={this.props.auth} history={this.props.history} />
+                    <WrappedNav history={this.props.history} />
                     <LayoutContext.Provider value={this.state.layoutState}>
                       {this.generateCurrentPage()}
                     </LayoutContext.Provider>
@@ -109,7 +110,6 @@ export default class App extends Component<AppProps, AppState> {
       path="/public/:displayName"
       children={({ match }) => (
         <WrappedPublicItems 
-          auth={this.props.auth}
           history={this.props.history}
           match={match}
         />
@@ -135,8 +135,7 @@ export default class App extends Component<AppProps, AppState> {
 
     const authSwitch = (
       <UserContext.Provider value={this.state.userState} >
-        <GetOrCreateUser
-          auth={this.props.auth}
+        <WrappedGetOrCreateUser
           setUser={this.setUser}
           isInitialAuthenticatedLoad={this.state.isInitialAuthenticatedLoad}
         />
@@ -148,37 +147,37 @@ export default class App extends Component<AppProps, AppState> {
               // TODO figure out a behavior
               return (
                 <React.Fragment>
-                  <WrappedItems {...props} auth={this.props.auth} setLayout={this.setLayout}/>
+                  <WrappedItems {...props} setLayout={this.setLayout}/>
                 </React.Fragment>
               )
             }}
           />
-          <Route path="/login" exact><LogIn auth={this.props.auth}/></Route>
+          <Route path="/login" exact><WrappedLogIn /></Route>
 
           { this.getPublicRoute() }
           
-          <PrivateRoute path="/dashboard" auth={this.props.auth}>
-            <WrappedItems auth={this.props.auth} setLayout={this.setLayout}/>
+          <PrivateRoute isAuthenticated={this.props.isAuthenticated} path="/dashboard">
+            <WrappedItems setLayout={this.setLayout}/>
           </PrivateRoute>
-          <PrivateRoute path="/profile" auth={this.props.auth}>
-            <Profile auth={this.props.auth} setUser={this.setUser} />
+          <PrivateRoute isAuthenticated={this.props.isAuthenticated} path="/profile">
+            <WrappedProfile setUser={this.setUser} />
           </PrivateRoute>
           <Route component={NotFound} />
         </Switch>
       </UserContext.Provider>
     )
-
-    return this.props.auth.isAuthenticated() ? authSwitch : unAuthSwitch
+    // isAuthenticated is the first call in auth0-context.tsx, idToken is the response of the second call
+    return this.props.isAuthenticated && this.props.idToken ? authSwitch : unAuthSwitch
   }
 }
 
 // @ts-ignore
-function PrivateRoute({ children, auth, ...rest }) {
+function PrivateRoute({ children, isAuthenticated, ...rest }) {
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        auth.isAuthenticated() ? (
+        isAuthenticated ? (
           children
         ) : (
           <Redirect
