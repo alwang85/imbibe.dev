@@ -15,16 +15,24 @@ import {
 } from 'semantic-ui-react'
 
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
+import { getLayoutByUserId } from '../api/layout-api'
 import Auth from '../auth/Auth'
 import { UserWrapper } from '../context/userContext'
+import { LayoutWrapper } from '../context/layoutContext'
 import { User } from '../types/User'
 import { Item } from '../types/Item'
 import { SubItem } from '../types/SubItem'
+
+interface layoutItem {
+  items: Item[],
+  category: string
+}
 
 interface ItemsProps {
   auth: Auth
   position: any
   user: User
+  setLayout: (layout: layoutItem[]) => void
   categoryName: string
 }
 
@@ -102,10 +110,22 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
         category: this.state.newItemCategory,
         url: this.state.newItemUrl,
         subItems: this.state.newItemSubItems,
-      })
+      });
+
+      const updatedLayout = await getLayoutByUserId(
+        this.props.auth.getIdToken(),
+        this.props.auth.getUserId()
+      );
+
+      this.props.setLayout(updatedLayout)
       
       // tell parent to add item if successful
       console.log('new item creation success', newItem)
+
+      this.setState({
+        showForm: false,
+      });
+      
     } catch {
       alert('Item creation failed')
     }
@@ -188,6 +208,7 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
           </Card.Content>
           {
             <Card.Content>
+              <Card.Header>Add Subitem</Card.Header>
               <Form.Field 
                 control={Input}
                 name='newSubItemTitle'
@@ -223,4 +244,4 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
   }
 }
 
-export const WrappedCreateItem = UserWrapper(CreateItem);
+export const WrappedCreateItem = LayoutWrapper(UserWrapper(CreateItem));
