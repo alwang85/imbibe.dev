@@ -63,5 +63,17 @@ export async function updateItem(
   item: Item,
   currentUserId: String,
 ): Promise<Item> {
-  return itemAccess.updateItem(item, currentUserId)
+  let newSubItems;
+  if (item.subItems) {
+    newSubItems = item.subItems.map(subItem => ({
+      ...subItem,
+      url: subItem.url || null,
+    }))
+  }
+
+  return itemAccess.updateItem({
+    ...item,
+    url: item.url || null,
+    subItems: newSubItems
+  }, currentUserId)
 }

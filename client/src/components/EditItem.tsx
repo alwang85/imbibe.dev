@@ -118,7 +118,9 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
       id: uuid.v4(),
       title: this.state.newSubItemTitle,
       description: this.state.newSubItemDescription,
-      url: this.state.newSubItemUrl
+      url: this.state.newSubItemUrl,
+      createdAt: new Date().toISOString(),
+      modifiedAt: new Date().toISOString(),
     } as SubItem;
 
     this.setState({
@@ -139,7 +141,8 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
           ...subItem,
           title: this.state.newSubItemTitle,
           description: this.state.newSubItemDescription,
-          url: this.state.newSubItemUrl
+          url: this.state.newSubItemUrl,
+          modifiedAt: new Date().toISOString(),
         }
       } else {
         return subItem
@@ -202,105 +205,138 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
 
   renderEditItemInput(categoryOptions: any) {
     return (
-      <Form>
-        <Form.Field 
-          control={Input}
-          name='newItemTitle'
-          label='title'
-          placeholder='title'
-          value={this.state.newItemTitle}
-          onChange={this.handleInputChange}
-        />
-        <Form.Field 
-          control={TextArea}
-          name='newItemDescription'
-          label='description'
-          placeholder='description'
-          value={this.state.newItemDescription}
-          onChange={this.handleInputChange}
-        />
-        <Form.Field
-          control={Dropdown}
-          placeholder='Select Category'
-          name='newItemCategory'
-          label='category'
-          options={categoryOptions}
-          value={this.state.newItemCategory}
-          onChange={this.handleInputChange}
-        />
-        <Form.Field 
-          control={Input}
-          name='newItemUrl'
-          label='url'
-          placeholder='url (optional)'
-          value={this.state.newItemUrl}
-          onChange={this.handleInputChange}
-        />
-        <Card fluid>
-          <Card.Content>
-            <Card.Header>Subitems (optional)</Card.Header>
-          </Card.Content>
-          <Card.Content>
-            {
-              this.state.newItemSubItems.map(subItem => (
-                <Card.Content
-                  key={subItem.id}
-                >
-                  {
-                    this.state.currentlyEditedSubitem === subItem.id ?
-                    (
-                      <React.Fragment>
-                        <Form.Field 
-                          control={Input}
-                          name='newSubItemTitle'
-                          label='newSubItemTitle'
-                          value={this.state.newSubItemTitle}
-                          placeholder='title'
-                          onChange={this.handleInputChange}
-                        />
-                        <Form.Field 
-                          control={TextArea}
-                          name='newSubItemDescription'
-                          label='newSubItemDescription'
-                          value={this.state.newSubItemDescription}
-                          placeholder='description'
-                          onChange={this.handleInputChange}
-                        />
-                        <Form.Field 
-                          control={Input}
-                          name='newSubItemUrl'
-                          label='newSubItemUrl'
-                          value={this.state.newSubItemUrl}
-                          placeholder='url (optional)'
-                          onChange={this.handleInputChange}
-                        />
-                        <div>
-                          <Button onClick={()=> this.updateSubItemToState(subItem.id)}>Save SubItem</Button>
-                          <Button onClick={()=> this.setCurrentlyEditedSubItem('')}>Cancel</Button>
-                        </div>
-                      </React.Fragment>
-                    ) : ( 
-                      <React.Fragment>
-                        <Card.Content>
-                          <Card.Header>{subItem.title}</Card.Header>
-                          <Card.Description>{subItem.description}</Card.Description>
-                        </Card.Content>
-                        <Card.Content>
-                          <Button onClick={()=> this.setCurrentlyEditedSubItem(subItem.id)}>Edit this SubItem</Button>
-                          <Button onClick={()=> this.deleteSubItemFromState(subItem.id)}>Delete this SubItem</Button>
-                        </Card.Content>
-                      </React.Fragment>
-                    )
-                  }
-                  
-                </Card.Content>
+      <Card fluid>
+        <Card.Content>
+          <Form>
+            <Form.Field 
+              control={Input}
+              name='newItemTitle'
+              label='title'
+              placeholder='title'
+              value={this.state.newItemTitle}
+              onChange={this.handleInputChange}
+            />
+            <Form.Field 
+              control={TextArea}
+              name='newItemDescription'
+              label='description'
+              placeholder='description'
+              value={this.state.newItemDescription}
+              onChange={this.handleInputChange}
+            />
+            <Form.Field
+              control={Dropdown}
+              placeholder='Select Category'
+              name='newItemCategory'
+              label='category'
+              options={categoryOptions}
+              value={this.state.newItemCategory}
+              onChange={this.handleInputChange}
+            />
+            <Form.Field 
+              control={Input}
+              name='newItemUrl'
+              label='url'
+              placeholder='url (optional)'
+              value={this.state.newItemUrl}
+              onChange={this.handleInputChange}
+            />
+            <Card fluid>
+              <Card.Content>
+                <Card.Header>Subitems (optional)</Card.Header>
+              </Card.Content>
+              <Card.Content>
+              {
+                this.state.newItemSubItems.map(subItem => (
+                  <Card.Content
+                    key={subItem.id}
+                  >
+                    {
+                      this.state.currentlyEditedSubitem === subItem.id ?
+                      (
+                        <React.Fragment>
+                          <Form.Field 
+                            control={Input}
+                            name='newSubItemTitle'
+                            label='newSubItemTitle'
+                            value={this.state.newSubItemTitle}
+                            placeholder='title'
+                            onChange={this.handleInputChange}
+                          />
+                          <Form.Field 
+                            control={TextArea}
+                            name='newSubItemDescription'
+                            label='newSubItemDescription'
+                            value={this.state.newSubItemDescription}
+                            placeholder='description'
+                            onChange={this.handleInputChange}
+                          />
+                          <Form.Field 
+                            control={Input}
+                            name='newSubItemUrl'
+                            label='newSubItemUrl'
+                            value={this.state.newSubItemUrl}
+                            placeholder='url (optional)'
+                            onChange={this.handleInputChange}
+                          />
+                          <div>
+                            <Button onClick={()=> this.updateSubItemToState(subItem.id)}>Save SubItem</Button>
+                            <Button onClick={()=> this.setCurrentlyEditedSubItem('')}>Cancel</Button>
+                          </div>
+                        </React.Fragment>
+                      ) : ( 
+                        <React.Fragment>
+                          <Card.Content>
+                            <Card.Header>{subItem.title}</Card.Header>
+                            <Card.Description>{subItem.description}</Card.Description>
+                          </Card.Content>
+                          <Card.Content>
+                            <Button onClick={()=> this.setCurrentlyEditedSubItem(subItem.id)}>Edit this SubItem</Button>
+                            <Button onClick={()=> this.deleteSubItemFromState(subItem.id)}>Delete this SubItem</Button>
+                          </Card.Content>
+                        </React.Fragment>
+                      )
+                    }
+                    
+                  </Card.Content>
 
-              ))
-            }
-          </Card.Content>
-        </Card>
-        <Button onClick={this.onItemUpdate}>Submit</Button>
-      </Form>
+                ))
+              }
+              <Card.Content>
+                <Card.Header>Add Subitem</Card.Header>
+                <Form.Field 
+                  control={Input}
+                  name='newSubItemTitle'
+                  label='newSubItemTitle'
+                  value={this.state.newSubItemTitle}
+                  placeholder='title'
+                  onChange={this.handleInputChange}
+                />
+                <Form.Field 
+                  control={TextArea}
+                  name='newSubItemDescription'
+                  label='newSubItemDescription'
+                  value={this.state.newSubItemDescription}
+                  placeholder='description'
+                  onChange={this.handleInputChange}
+                />
+                <Form.Field 
+                  control={Input}
+                  name='newSubItemUrl'
+                  label='newSubItemUrl'
+                  value={this.state.newSubItemUrl}
+                  placeholder='url (optional)'
+                  onChange={this.handleInputChange}
+                />
+                <Button onClick={this.addSubItemToState}>Add SubItem</Button>
+              </Card.Content>
+              </Card.Content>
+            </Card>
+            <Button onClick={this.props.toggleEditItem}>Cancel</Button>
+            <Button onClick={this.onItemUpdate}>Save Changes</Button>
+          </Form>
+        </Card.Content>
+      </Card>
     )
   }
 }
