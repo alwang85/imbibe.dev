@@ -13,12 +13,11 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { getLayoutByUserId } from '../api/layout-api'
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
+import { getLayoutByUserId } from '../api/layout-api'
+import { LayoutWrapper } from '../context/layoutContext'
 import Auth from '../auth/Auth'
-import { WrappedCreateItem } from './CreateItem'
 import { CategoryColumn } from '../components/CategoryColumn'
-import { ItemSlot } from './ItemSlot'
 import { Item } from '../types/Item'
 
 interface layoutItem {
@@ -28,16 +27,14 @@ interface layoutItem {
 
 interface ItemsProps {
   auth: Auth
+  layout: layoutItem[]
+  setLayout: (layout: layoutItem[]) => void
 }
 
 interface ItemsState {
-  layout: layoutItem[]
-  items: Item[]
   loadingItems: boolean
 }
 const initialItemsState = {
-  layout: [],
-  items: [],
   loadingItems: true,
 }
 
@@ -52,8 +49,10 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
         this.props.auth.getIdToken(),
         this.props.auth.getUserId(),
       )
+
+      this.props.setLayout(layout)
+
       this.setState({
-        layout,
         loadingItems: false
       })
     } catch (e) {
@@ -62,8 +61,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
   }
 
   render() {
-    const { auth } = this.props;
-    const { layout } = this.state;
+    const { auth, layout } = this.props;
 
     if (this.state.loadingItems) {
       return this.renderLoading()
@@ -100,3 +98,5 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
     )
   }
 }
+
+export const WrappedItems = LayoutWrapper(Items)

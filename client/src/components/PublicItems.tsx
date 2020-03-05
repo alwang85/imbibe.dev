@@ -17,6 +17,7 @@ import {
 import { getPublicLayoutByDisplayName } from '../api/layout-api'
 import Auth from '../auth/Auth'
 import UserContext from '../context/userContext';
+import { LayoutWrapper } from '../context/layoutContext'
 import { WrappedCreateItem } from './CreateItem'
 import { CategoryColumn } from '../components/CategoryColumn'
 import { ItemSlot } from './ItemSlot'
@@ -26,6 +27,8 @@ interface PublicItemsProps {
   auth: Auth
   history: any
   match: any
+  layout: layoutItem[]
+  setLayout: (layout: layoutItem[]) => void
 }
 
 interface layoutItem {
@@ -34,11 +37,9 @@ interface layoutItem {
 }
 
 interface PublicItemsState {
-  publicLayout: layoutItem[]
   loadingPublicItems: boolean
 }
 const initialPublicItemsState = {
-  publicLayout: [],
   loadingPublicItems: true,
 }
 
@@ -61,8 +62,10 @@ export class PublicItems extends React.PureComponent<PublicItemsProps, PublicIte
         displayName,
         publicLayout
       })
+
+      this.props.setLayout(publicLayout)
+
       this.setState({
-        publicLayout,
         loadingPublicItems: false
       })
     } catch (e) {
@@ -71,7 +74,7 @@ export class PublicItems extends React.PureComponent<PublicItemsProps, PublicIte
   }
 
   render() {
-    const { publicLayout } = this.state;
+    const { layout } = this.props;
 
     if (this.state.loadingPublicItems) {
       return this.renderLoading()
@@ -83,7 +86,7 @@ export class PublicItems extends React.PureComponent<PublicItemsProps, PublicIte
         <Grid columns={3} divided stackable>
           <Grid.Row>
             {
-              publicLayout && publicLayout.length && publicLayout.map(categoryItem => (
+              layout && layout.length && layout.map(categoryItem => (
                 <CategoryColumn 
                   items={categoryItem.items}
                   categoryName={categoryItem.category}
@@ -110,3 +113,4 @@ export class PublicItems extends React.PureComponent<PublicItemsProps, PublicIte
     )
   }
 }
+export const WrappedPublicItems = LayoutWrapper(PublicItems)

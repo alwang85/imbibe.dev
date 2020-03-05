@@ -5,12 +5,14 @@ import { Grid, Menu, Segment } from 'semantic-ui-react'
 import Auth from './auth/Auth'
 import Nav from './components/Nav';
 import { NotFound } from './components/NotFound'
-import { Items } from './components/Items'
+import { WrappedItems } from './components/Items'
 import { LogIn } from './components/LogIn'
 import { Profile } from './components/Profile'
-import { PublicItems } from './components/PublicItems'
+import { WrappedPublicItems } from './components/PublicItems'
 import UserContext from './context/userContext'
+import LayoutContext from './context/layoutContext'
 import { User, emptyUser } from './types/User';
+import { Item } from './types/Item'
 import GetOrCreateUser from './components/GetOrCreateUser';
 
 export interface AppProps {}
@@ -20,9 +22,20 @@ export interface AppProps {
   history: any
 }
 
+interface layoutItem {
+  items: Item[],
+  category: string
+}
+
 export interface AppState {
-  user: User,
-  setUser: (user: User) => void,
+  userState: {
+    user: User,
+    setUser: (user: User) => void,
+  },
+  layoutState: {
+    layout: layoutItem[],
+    setLayout: (layoutArr: layoutItem[]) => void
+  },
   isInitialAuthenticatedLoad: boolean,
 }
 
@@ -33,8 +46,14 @@ export default class App extends Component<AppProps, AppState> {
     this.setUser = this.setUser.bind(this)
 
     this.state = {
-      user: emptyUser as User,
-      setUser: this.setUser,
+      userState: {
+        user: emptyUser as User,
+        setUser: this.setUser,
+      },
+      layoutState: {
+        layout: [],
+        setLayout: this.setLayout
+      },
       isInitialAuthenticatedLoad: true,
     };
   }
@@ -43,12 +62,23 @@ export default class App extends Component<AppProps, AppState> {
     console.log('user in setUser', user)
     if(this.state.isInitialAuthenticatedLoad || forceUpdate) {
       this.setState({
-        user: {
-          ...user,
-        } as User,
+        userState: {
+          ...this.state.userState,
+          user,
+        },
         isInitialAuthenticatedLoad: false
       });
     }
+  };
+
+  setLayout = (layoutArr: layoutItem[]) => {
+    console.log('saving layout')
+    this.setState({
+      layoutState: {
+        ...this.state.layoutState,
+        layout: layoutArr,
+      }
+    });
   };
 
   render() {
@@ -61,7 +91,9 @@ export default class App extends Component<AppProps, AppState> {
                 <Router history={this.props.history}>
                   <React.Fragment>
                     <Nav auth={this.props.auth} history={this.props.history} />
-                    {this.generateCurrentPage()}
+                    <LayoutContext.Provider value={this.state.layoutState}>
+                      {this.generateCurrentPage()}
+                    </LayoutContext.Provider>
                   </React.Fragment>
                 </Router>
               </Grid.Column>
@@ -76,10 +108,10 @@ export default class App extends Component<AppProps, AppState> {
     <Route
       path="/public/:displayName"
       children={({ match }) => (
-        <PublicItems 
+        <WrappedPublicItems 
           auth={this.props.auth}
           history={this.props.history}
-          match={match}  
+          match={match}
         />
       )}
     />
@@ -102,7 +134,7 @@ export default class App extends Component<AppProps, AppState> {
     );
 
     const authSwitch = (
-      <UserContext.Provider value={this.state} >
+      <UserContext.Provider value={this.state.userState} >
         <GetOrCreateUser
           auth={this.props.auth}
           setUser={this.setUser}
@@ -113,9 +145,10 @@ export default class App extends Component<AppProps, AppState> {
             path="/"
             exact
             render={props => {
+              // TODO figure out a behavior
               return (
                 <React.Fragment>
-                  <Items {...props} auth={this.props.auth} />
+                  <WrappedItems {...props} auth={this.props.auth} setLayout={this.setLayout}/>
                 </React.Fragment>
               )
             }}
@@ -125,7 +158,7 @@ export default class App extends Component<AppProps, AppState> {
           { this.getPublicRoute() }
           
           <PrivateRoute path="/dashboard" auth={this.props.auth}>
-            <Items auth={this.props.auth} />
+            <WrappedItems auth={this.props.auth} setLayout={this.setLayout}/>
           </PrivateRoute>
           <PrivateRoute path="/profile" auth={this.props.auth}>
             <Profile auth={this.props.auth} setUser={this.setUser} />

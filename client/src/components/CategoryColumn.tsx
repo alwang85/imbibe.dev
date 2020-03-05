@@ -33,13 +33,14 @@ export class CategoryColumn extends React.PureComponent<CategoryColumnProps, Cat
     return (
       <Grid.Column>
         <h1>{categoryName}</h1>
-        { items.length > 0 && <WrappedCreateItem auth={auth} categoryName={categoryName} position="top"/>}
+        { /* TODO this create item does not clos after creation */}
+        { crud && items.length > 0 && <WrappedCreateItem auth={auth} categoryName={categoryName} position="top"/>}
         {
           items.length > 0 && items.map(item => (
             <ItemSlot item={item} crud={crud} auth={auth}/>
           ))
         }
-        {<WrappedCreateItem auth={auth} categoryName={categoryName} position="bottom"/>}
+        { crud && <WrappedCreateItem auth={auth} categoryName={categoryName} position="bottom"/>}
       </Grid.Column>
     )
   }

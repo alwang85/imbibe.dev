@@ -14,11 +14,18 @@ import {
 } from 'semantic-ui-react'
 
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
+import { getLayoutByUserId } from '../api/layout-api'
 import { UserWrapper } from '../context/userContext'
+import { LayoutWrapper } from '../context/layoutContext'
 import Auth from '../auth/Auth'
 import { User } from '../types/User'
 import { Item } from '../types/Item'
 import { SubItem } from '../types/SubItem'
+
+interface layoutItem {
+  items: Item[],
+  category: string
+}
 
 interface ToggleItemFunc {
   (): void;
@@ -29,6 +36,7 @@ interface ItemsProps {
   item: Item,
   toggleEditItem: ToggleItemFunc
   user: User
+  setLayout: (layout: layoutItem[]) => void
 }
 
 interface ItemsState {
@@ -178,6 +186,13 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
       )
       
       console.log('item update success', newItem)
+
+      const updatedLayout = await getLayoutByUserId(
+        this.props.auth.getIdToken(),
+        this.props.auth.getUserId()
+      );
+
+      this.props.setLayout(updatedLayout)
       this.props.toggleEditItem()
       
       // tell parent to add item if successful
@@ -341,4 +356,4 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
   }
 }
 
-export const WrappedEditItem = UserWrapper(EditItem);
+export const WrappedEditItem = LayoutWrapper(UserWrapper(EditItem));
