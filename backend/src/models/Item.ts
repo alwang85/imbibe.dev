@@ -9,5 +9,6 @@ export interface Item {
   createdAt: string
   modifiedAt: string
   url?: string
+  anchorText?: string
   subItems?: SubItem[]
 }

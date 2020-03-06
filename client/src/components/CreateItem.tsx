@@ -41,11 +41,13 @@ interface ItemsProps {
 
 interface ItemsState {
   showForm: boolean,
+  newItemAnchorText: string
   newItemTitle: string
   newItemDescription: string
   newItemUrl: string
   newItemCategory: string
   newItemSubItems: SubItem[]
+  newSubItemAnchorText: string
   newSubItemTitle: string
   newSubItemDescription: string
   newSubItemUrl: string
@@ -55,11 +57,13 @@ const initialItemsState = {
   newItemTitle: '',
   newItemDescription: '',
   newItemUrl: '',
+  newItemAnchorText: '',
   newItemCategory: '',
   newItemSubItems: [],
   newSubItemTitle: '',
   newSubItemDescription: '',
   newSubItemUrl: '',
+  newSubItemAnchorText: '',
 }
 export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
   state: ItemsState = {
@@ -109,6 +113,7 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
       newSubItemTitle: '',
       newSubItemDescription: '',
       newSubItemUrl: '',
+      newItemAnchorText: '',
     });
   }
 
@@ -122,6 +127,7 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
         description: this.state.newItemDescription,
         category: this.state.newItemCategory,
         url: this.state.newItemUrl,
+        anchorText: this.state.newItemAnchorText,
         subItems: this.state.newItemSubItems,
       });
 
@@ -204,6 +210,14 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
           value={this.state.newItemUrl}
           onChange={this.handleInputChange}
         />
+        <Form.Field 
+          control={Input}
+          name='newItemAnchorText'
+          label='anchorText'
+          placeholder='anchor text for url (required if url to be shown)'
+          value={this.state.newItemAnchorText}
+          onChange={this.handleInputChange}
+        />
         <Card fluid>
           <Card.Content>
             <Card.Header>Subitems (optional)</Card.Header>
@@ -215,6 +229,7 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
                   <div>title: {subItem.title}</div>
                   <div>description: {subItem.description}</div>
                   <div>url: {subItem.url}</div>
+                  <div>anchorText: {subItem.anchorText}</div>
                 </div>
               ))
             }
@@ -244,6 +259,14 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
                 label='newSubItemUrl'
                 value={this.state.newSubItemUrl}
                 placeholder='url (optional)'
+                onChange={this.handleInputChange}
+              />
+              <Form.Field 
+                control={Input}
+                name='newSubItemAnchorText'
+                label='newSubItemAnchorText'
+                value={this.state.newSubItemAnchorText}
+                placeholder='anchor text for url (required if url to be shown)'
                 onChange={this.handleInputChange}
               />
               <Button onClick={this.addSubitemToState}>Add SubItem</Button>

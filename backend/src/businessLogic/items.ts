@@ -41,6 +41,7 @@ export async function createItem(
     newSubItems = createItemRequest.subItems.map(subItem => ({
       ...subItem,
       url: subItem.url || null,
+      anchorText: subItem.anchorText || null,
       modifiedAt: new Date().toISOString(),
       createdAt: new Date().toISOString(),
     }))
@@ -51,6 +52,7 @@ export async function createItem(
     userId: currentUserId,
     title: createItemRequest.title,
     url: createItemRequest.url || null,
+    anchorText: createItemRequest.anchorText || null,
     description: createItemRequest.description,
     subItems: newSubItems || null,
     category: createItemRequest.category || 'unsorted',
@@ -68,12 +70,14 @@ export async function updateItem(
     newSubItems = item.subItems.map(subItem => ({
       ...subItem,
       url: subItem.url || null,
+      anchorText: item.anchorText || null,
     }))
   }
 
   return itemAccess.updateItem({
     ...item,
     url: item.url || null,
+    anchorText: item.anchorText || null,
     subItems: newSubItems
   }, currentUserId)
 }

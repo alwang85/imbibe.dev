@@ -5,4 +5,5 @@ export interface SubItem {
   createdAt: string
   modifiedAt: string
   url?: string
+  anchorText?: string
 }
