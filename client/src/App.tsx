@@ -160,7 +160,7 @@ export default class App extends Component<AppProps, AppState> {
             <WrappedItems setLayout={this.setLayout}/>
           </PrivateRoute>
           <PrivateRoute isAuthenticated={this.props.isAuthenticated} path="/profile">
-            <WrappedProfile setUser={this.setUser} />
+            <WrappedProfile />
           </PrivateRoute>
           <Route component={NotFound} />
         </Switch>

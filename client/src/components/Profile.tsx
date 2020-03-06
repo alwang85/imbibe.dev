@@ -15,14 +15,17 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { getUser, patchUser } from '../api/users-api'
+import { getUser, patchUser, getDisplayNameAvailability } from '../api/users-api'
 import { AuthWrapper } from '../context/auth0-context';
+import { UserWrapper } from '../context/userContext'
 import { User } from '../types/User'
 import { Category } from '../types/Category'
 
 interface ItemsProps {
+  // the following comes from UserWrapper HoC
   setUser: (user: User, forceUpdate: boolean) => void,
-  // the below comes from AuthWrapper HoC
+  user: User,
+  // the following comes from AuthWrapper HoC
   idToken: string,
   userId: string,
 }
@@ -34,6 +37,7 @@ interface ItemsState {
   currentlyEditedCategoryName: string,
   currentlyEditedCategoryOrder: number,
   currentlyEditedCategoryPublic: boolean,
+  isDisplayNameAvailable: boolean,
 }
 const initialItemsState = {
   isProfilePublic: false,
@@ -42,6 +46,7 @@ const initialItemsState = {
   currentlyEditedCategoryName: '',
   currentlyEditedCategoryOrder: 100,
   currentlyEditedCategoryPublic: false,
+  isDisplayNameAvailable: true,
 }
 
 export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
@@ -61,6 +66,35 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
       })
     } catch (e) {
       alert(`Failed to fetch user: ${e.message}`)
+    }
+  }
+
+  handleDisplayNameChange = async (event: React.ChangeEvent<HTMLInputElement>, data: any) => {
+    const currentSavedUser = this.props.user.displayName;
+    try {
+      const value = data.value;
+      const name = data.name;
+
+      this.setState({ 
+        ...this.state,
+        [name] : value
+      });
+
+      if (data.value && data.value !== currentSavedUser) {
+        const { displayNameAvailable = false } = await getDisplayNameAvailability(
+          this.props.idToken,
+          data.value
+        );
+
+        this.setState({
+          isDisplayNameAvailable: displayNameAvailable,
+        });
+        
+      }
+    } catch(e) {
+      this.setState({
+        isDisplayNameAvailable: false,
+      })
     }
   }
 
@@ -191,7 +225,11 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
           label='display name for public profile'
           placeholder='display name for public profile, i.e. imbibe.dev/public/:displayName'
           value={this.state.displayName}
-          onChange={this.handleInputChange}
+          onChange={this.handleDisplayNameChange}
+          error={ this.state.isDisplayNameAvailable ? null : {
+            content: `display name ${this.state.displayName} is not available`,
+            pointing: 'below',
+          }}
         />
         <Card fluid>
           <Card.Content>
@@ -293,4 +331,4 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
 
 }
 
-export const WrappedProfile = AuthWrapper(Profile)
+export const WrappedProfile = UserWrapper(AuthWrapper(Profile));
