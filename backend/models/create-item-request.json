@@ -15,6 +15,9 @@
     "url": {
       "type": "string"
     },
+    "anchorText": {
+      "type": "string"
+    },
     "subItems": {
       "type": "array"
     }

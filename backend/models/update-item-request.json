@@ -12,6 +12,9 @@
     "category": {
       "type": "string"
     },
+    "anchorText": {
+      "type": "string"
+    },
     "url": {
       "type": "string"
     },

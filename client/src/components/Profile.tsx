@@ -99,7 +99,6 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
   }
 
   handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, data: any) => {
-    console.log('data', data)
     const value = data.type === 'checkbox' ? data.checked : data.value;
     const name = data.name;
 

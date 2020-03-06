@@ -103,7 +103,18 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
     const subItemPanels = subItems.map(subItem => ({
       key: subItem.id,
       title: subItem.title,
-      content: subItem.description
+      content: {
+        content: (
+          <React.Fragment>
+          {subItem.description}
+          {
+            item.anchorText && item.url && (
+              <span>- <a href={item.url} target="_blank">{item.anchorText}</a></span>
+            )
+          }
+        </React.Fragment>
+        )
+      }
     }));
 
     const hasSubItems = subItems.length > 0;
@@ -128,6 +139,9 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
           <Card.Header>{title}</Card.Header>
           <Card.Description>
             {description}
+            { item.anchorText && item.url && (
+              <span>- <a className="ui" href={item.url} target="_blank">{item.anchorText}</a></span>
+            )}
           </Card.Description>
         </Card.Content>
         { hasSubItems && <NestedSubitems /> }

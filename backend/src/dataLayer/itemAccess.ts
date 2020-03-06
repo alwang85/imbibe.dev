@@ -80,7 +80,7 @@ export class ItemAccess {
         id: item.id,
         createdAt: item.createdAt,
       },
-      UpdateExpression: "set title=:title, category=:category, description=:description, modifiedAt=:modifiedAt, subItems=:subItems, #uurl=:url",
+      UpdateExpression: "set title=:title, category=:category, description=:description, modifiedAt=:modifiedAt, subItems=:subItems, #uurl=:url, anchorText=:anchorText",
       ExpressionAttributeValues:{
         ":title": item.title,
         ":category": item.category,
@@ -88,6 +88,7 @@ export class ItemAccess {
         ":modifiedAt": item.modifiedAt,
         ':userId' : currentUserId,
         ':url': item.url,
+        ':anchorText': item.anchorText,
         ':subItems': item.subItems
       },
       ExpressionAttributeNames: {

@@ -32,6 +32,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
       title: updatedItem.title,
       category: updatedItem.category,
       url: updatedItem.url,
+      anchorText: updatedItem.anchorText,
       subItems: updatedItem.subItems
     }
 

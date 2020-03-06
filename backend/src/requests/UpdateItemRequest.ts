@@ -5,6 +5,7 @@ export interface UpdateItemRequest {
   description: string
   category?: string
   url?: string
+  anchorText?: string,
   subItems?: SubItem[]
   modifiedAt: string
   userId: string,
