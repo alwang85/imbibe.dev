@@ -30,6 +30,12 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
     const user = await getUserById(userIdFromPath)
     logger.info('user obtained', user)
 
+    // only happy path leading to this is newly created users moments ago
+    if(!user) return {
+      statusCode: 200,
+      body: JSON.stringify([])
+    }
+
     // not sure if this logic should be in business logic
     const userCategories = user.categories || [];
     logger.info('userCategories', userCategories)
