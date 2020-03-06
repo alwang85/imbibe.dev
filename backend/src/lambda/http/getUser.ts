@@ -12,6 +12,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   const userId = getUserId(event);
 
   try {
+    // this ignores the actual userId param in the route, just reads from the JWT
     const user = await getUserById(userId)
 
     logger.info('todo fetching success for:', userId);

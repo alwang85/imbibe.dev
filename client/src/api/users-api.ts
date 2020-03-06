@@ -43,13 +43,17 @@ export async function patchUser(
   return response.data
 }
 
-export async function getPublicUser(
+export async function getDisplayNameAvailability(
+  idToken: string,
   displayName: string,
-): Promise<void> {
-  await Axios.get(`${apiEndpoint}/users/${displayName}`, {
+): Promise<{ displayNameAvailable: boolean}> {
+  const response = await Axios.get(`${apiEndpoint}/users/public/${displayName}`, {
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
     }
   })
+
+  return response.data;
 }
 

@@ -27,7 +27,11 @@ export async function createUser(
     userId: createUserRequest.userId,
     isProfilePublic: false,
     displayName: "none",
-    categories: []
+    categories: [{
+      name: 'unsorted',
+      public: false,
+      order: 100,
+    }]
   })
 }
 

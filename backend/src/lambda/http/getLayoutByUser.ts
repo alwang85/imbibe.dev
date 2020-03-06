@@ -13,7 +13,6 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   const userIdFromPath = decodeURI(event.pathParameters.userId)
   const currentId = getUserId(event);
 
-  // 'none' is the default displayName
   if(userIdFromPath !== currentId) {
     logger.info('mismatch in userIds', {
       userIdFromPath,

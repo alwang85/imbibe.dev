@@ -249,27 +249,28 @@ functions:
           - xray:PutTelemetryRecords
         Resource: "*"
 
-  # GetUserPublicProfile:
-  #   handler: src/lambda/http/getPublicUser.handler
-  #   events:
-  #     - http:
-  #         method: get
-  #         path: users/public/{displayName}
-  #         cors: true
-  #   iamRoleStatements:
-  #     - Effect: Allow
-  #       Action:
-  #         - dynamodb:Query
-  #       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}
-  #     - Effect: Allow
-  #       Action:
-  #         - dynamodb:Query
-  #       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}/index/${self:provider.environment.USERS_DISPLAYNAME_INDEX}
-  #     - Effect: Allow
-  #       Action:
-  #         - xray:PutTraceSegments
-  #         - xray:PutTelemetryRecords
-  #       Resource: "*"
+  GetDisplayNameAvailability:
+    handler: src/lambda/http/getDisplayNameAvailability.handler
+    events:
+      - http:
+          method: get
+          path: users/public/{displayName}
+          cors: true
+          authorizer: Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}/index/${self:provider.environment.USERS_DISPLAYNAME_INDEX}
+      - Effect: Allow
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+        Resource: "*"
 
   GetUser:
     handler: src/lambda/http/getUser.handler
