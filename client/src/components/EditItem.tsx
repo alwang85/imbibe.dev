@@ -12,6 +12,7 @@ import {
   CardContent,
   Dropdown
 } from 'semantic-ui-react'
+import TextareaAutosize from "react-textarea-autosize";
 
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
 import { getLayoutByUserId } from '../api/layout-api'
@@ -87,6 +88,16 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
   handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, data: any) => {
     const value = data.type === 'checkbox' ? data.checked : data.value;
     const name = data.name;
+
+    this.setState({
+      ...this.state,
+      [name]: value
+    });
+  }
+
+  handleTextBoxChange = (event: React.ChangeEvent<HTMLInputElement>, data: any) => {
+    const value = event.target.value;
+    const name = event.target.name;
 
     this.setState({
       ...this.state,
@@ -236,12 +247,20 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
               onChange={this.handleInputChange}
             />
             <Form.Field 
-              control={TextArea}
+              control={TextareaAutosize}
               name='newItemDescription'
               label='description'
               placeholder='description'
               value={this.state.newItemDescription}
-              onChange={this.handleInputChange}
+              onChange={this.handleTextBoxChange = (event: React.ChangeEvent<HTMLInputElement>, data: any) => {
+    const value = event.target.value;
+    const name = event.target.name;
+
+    this.setState({
+      ...this.state,
+      [name]: value
+    });
+  }}
             />
             <Form.Field
               control={Dropdown}
@@ -283,12 +302,12 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
                             onChange={this.handleInputChange}
                           />
                           <Form.Field 
-                            control={TextArea}
+                            control={TextareaAutosize}
                             name='newSubItemDescription'
                             label='newSubItemDescription'
                             value={this.state.newSubItemDescription}
                             placeholder='description'
-                            onChange={this.handleInputChange}
+                            onChange={this.handleTextBoxChange}
                           />
                           <Form.Field 
                             control={Input}
@@ -332,12 +351,12 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
                   onChange={this.handleInputChange}
                 />
                 <Form.Field 
-                  control={TextArea}
+                  control={TextareaAutosize}
                   name='newSubItemDescription'
                   label='newSubItemDescription'
                   value={this.state.newSubItemDescription}
                   placeholder='description'
-                  onChange={this.handleInputChange}
+                  onChange={this.handleTextBoxChange}
                 />
                 <Form.Field 
                   control={Input}
