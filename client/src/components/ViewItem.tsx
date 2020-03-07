@@ -16,8 +16,10 @@ import {
 } from 'semantic-ui-react'
 
 import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
+import { ItemsWrapper } from '../context/itemsContext';
 import { UserWrapper } from '../context/userContext'
 import { AuthWrapper } from '../context/auth0-context';
+import { LayoutWrapper } from '../context/layoutContext'
 import { Item } from '../types/Item'
 import { SubItem } from '../types/SubItem'
 
@@ -29,6 +31,8 @@ interface ViewItemProps {
   crud: boolean
   item: Item
   toggleEditItem?: ToggleItemFunc
+  // below comes from ItemsWrapper HoC
+  deleteItem: (itemId: string) => {}
   // below comes from AuthWrapper HoC
   isAuthenticated: any,
   idToken: string,
@@ -77,14 +81,6 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
     this.setState({ activeIndexs: newIndex });
   };
 
-  onItemDelete = async (itemId: string) => {
-    try {
-      if(this.props.isAuthenticated) await deleteItem(this.props.idToken, itemId)
-    } catch {
-      alert('Item deletion failed')
-    }
-  }
-
   render() {
     return (
       <div>
@@ -108,8 +104,8 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
           <React.Fragment>
           {subItem.description}
           {
-            item.anchorText && item.url && (
-              <span>- <a href={item.url} target="_blank">{item.anchorText}</a></span>
+            subItem.anchorText && subItem.url && (
+              <span>- <a href={subItem.url} target="_blank">{subItem.anchorText}</a></span>
             )
           }
         </React.Fragment>
@@ -156,7 +152,7 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
               </Button>
               <Button 
                 icon
-                onClick={() => this.onItemDelete(id)}
+                onClick={() => this.props.deleteItem(id)}
               >
                 <Icon name='trash' />
               </Button>
@@ -167,4 +163,4 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
   }
 }
 
-export const WrappedViewItem = AuthWrapper(UserWrapper(ViewItem));
+export const WrappedViewItem = ItemsWrapper(AuthWrapper(UserWrapper(ViewItem)));

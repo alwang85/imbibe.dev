@@ -61,7 +61,7 @@ export class MoveItem extends React.PureComponent<MoveItemProps, MoveItemState> 
       <React.Fragment>
         {
           currentView === 'button' ? 
-            <Button onClick={this.toggleEditItem}>Move SubItem to another Item</Button> :
+            <Button icon onClick={this.toggleEditItem}>Move to another Item</Button> :
             // @ts-ignore
             <div>
               <DropdownSearch />

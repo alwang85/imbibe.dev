@@ -43,13 +43,16 @@ export default class Nav extends Component<NavProps, NavState> {
               <Menu.Item name="dashboard">
                 <Link to="/dashboard">Dashboard</Link>
               </Menu.Item>
-              <Menu.Item name="profile" position="right">
-                <Link to="/profile">Profile</Link>
-              </Menu.Item>
+
             </React.Fragment>
           )
         }
-        <Menu.Menu position="right">{this.logInLogOutButton()}</Menu.Menu>
+        <Menu.Menu position="right">
+          <Menu.Item name="profile">
+            <Link to="/profile">Profile</Link>
+          </Menu.Item>
+          {this.logInLogOutButton()}
+        </Menu.Menu>
       </Menu>
     )
   }
