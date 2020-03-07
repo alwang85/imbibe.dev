@@ -8,7 +8,7 @@ export interface Item {
   userId: string
   createdAt: string
   modifiedAt: string
-  url?: string
-  anchorText?: string
+  url?: string | null
+  anchorText?: string | null
   subItems?: SubItem[]
 }
