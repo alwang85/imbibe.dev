@@ -1,7 +1,7 @@
 export interface SubItem {
   id: string,
   title: string,
-  description: string,
+  description?: string | null,
   createdAt: string
   modifiedAt: string
   url?: string | null

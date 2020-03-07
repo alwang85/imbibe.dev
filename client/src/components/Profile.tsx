@@ -210,122 +210,137 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
     const { isProfilePublic, displayName, categories } = this.state;
 
     return (
-      <Form>
-        <Form.Field 
-          control={Checkbox}
-          name='isProfilePublic'
-          label='is Profile Public'
-          checked={this.state.isProfilePublic}
-          placeholder={false}
-          onChange={this.handleInputChange}
-        />
-        <Form.Field 
-          control={Input}
-          name='displayName'
-          label='display name for public profile'
-          placeholder='display name for public profile, i.e. imbibe.dev/public/:displayName'
-          value={this.state.displayName}
-          onChange={this.handleDisplayNameChange}
-          error={ this.state.isDisplayNameAvailable ? null : {
-            content: `display name ${this.state.displayName} is not available`,
-            pointing: 'below',
-          }}
-        />
-        <Card fluid>
-          <Card.Content>
-            <Card.Header>categories</Card.Header>
-          </Card.Content>
-          <Card.Content>
-            {
-              this.state.categories && this.state.categories.map((category, idx) => (
-                <Card.Content
-                  key={category.name}
-                >
-                  {
-                    this.state.currentlyEditedCategoryName === category.name ?
-                    (
-                      <React.Fragment>
-                        <Form.Field 
-                          control={Input}
-                          name='currentlyEditedCategoryName'
-                          label='category name'
-                          value={this.state.currentlyEditedCategoryName}
-                          placeholder='category name'
-                          onChange={this.handleInputChange}
-                        />
-                        <Form.Field 
-                          control={Input}
-                          name='currentlyEditedCategoryOrder'
-                          label='category display order'
-                          value={this.state.currentlyEditedCategoryOrder}
-                          placeholder={idx + 1}
-                          onChange={this.handleInputChange}
-                        />
-                        <Form.Field 
-                          control={Checkbox}
-                          name='currentlyEditedCategoryPublic'
-                          label='publically viewable category'
-                          checked={this.state.currentlyEditedCategoryPublic}
-                          placeholder={false}
-                          onChange={this.handleInputChange}
-                        />
-                        <div>
-                          <Button onClick={()=> this.updateCategoryToState(category.name)}>Save Category</Button>
-                          <Button onClick={()=> this.setCurrentlyEditedCategory('')}>Cancel</Button>
-                        </div>
-                      </React.Fragment>
-                    ) : ( 
-                      <React.Fragment>
-                        <Card.Content>
-                          <Card.Header>name: {category.name}</Card.Header>
-                          <Card.Description>order: {category.order}</Card.Description>
-                          <Card.Description>isCategoryPublic: {(category.public).toString()}</Card.Description>
-                        </Card.Content>
-                        <Card.Content>
-                          <Button onClick={()=> this.setCurrentlyEditedCategory(category.name)}>Edit this SubItem</Button>
-                          <Button onClick={()=> this.deleteCategoryFromState(category.name)}>Delete this SubItem</Button>
-                        </Card.Content>
-                      </React.Fragment>
-                    )
-                  }
-                  
-                </Card.Content>
-              ))
-            }
-          </Card.Content>
-          <Card.Content>
-            Add new Category:
-            <Form.Field 
-              control={Input}
-              name='currentlyEditedCategoryName'
-              label='category name'
-              value={this.state.currentlyEditedCategoryName}
-              placeholder='category name'
-              onChange={this.handleInputChange}
-            />
-            <Form.Field 
-              control={Input}
-              name='currentlyEditedCategoryOrder'
-              label='category display priority, from left to right'
-              value={this.state.currentlyEditedCategoryOrder}
-              placeholder={100}
-              onChange={this.handleInputChange}
-            />
-            <Form.Field 
-              control={Checkbox}
-              name='currentlyEditedCategoryPublic'
-              label='publically viewable category'
-              checked={this.state.currentlyEditedCategoryPublic}
-              placeholder={false}
-              onChange={this.handleInputChange}
-            />
-            <div>
-              <Button onClick={()=> this.addCategoryToState()}>Save Category</Button>
-            </div>
-          </Card.Content>
-        </Card>
-        <Button onClick={this.onUserUpdate}>Submit</Button>
-      </Form>
+      <Card fluid><Card.Content>
+        <Form>
+          <Card fluid>
+            <Card.Content>
+              <Card.Header>Profile</Card.Header>
+            </Card.Content>
+            <Card.Content>
+              <Form.Field 
+                control={Input}
+                name='displayName'
+                label='display name for public profile, i.e. imbibe.dev/public/:displayName'
+                placeholder='display name for public profile, i.e. imbibe.dev/public/:displayName'
+                value={this.state.displayName}
+                onChange={this.handleDisplayNameChange}
+                error={ this.state.isDisplayNameAvailable ? null : {
+                  content: `display name ${this.state.displayName} is not available`,
+                  pointing: 'below',
+                }}
+              />
+              <Form.Field 
+                control={Checkbox}
+                name='isProfilePublic'
+                label='is Profile Public'
+                checked={this.state.isProfilePublic}
+                placeholder={false}
+                onChange={this.handleInputChange}
+              />
+            </Card.Content>
+          </Card>
+          <Card fluid>
+            <Card.Content>
+              <Card.Header>categories</Card.Header>
+            </Card.Content>
+            <Card.Content>
+              {
+                this.state.categories && this.state.categories.map((category, idx) => (
+                  <Card.Content
+                    key={category.name}
+                  >
+                    {
+                      this.state.currentlyEditedCategoryName === category.name ?
+                      (
+                        <Card>
+                          <Card.Content>
+                            <Form.Field 
+                              control={Input}
+                              name='currentlyEditedCategoryName'
+                              label='category name'
+                              value={this.state.currentlyEditedCategoryName}
+                              placeholder='category name'
+                              onChange={this.handleInputChange}
+                            />
+                            <Form.Field 
+                              control={Input}
+                              name='currentlyEditedCategoryOrder'
+                              label='category display order'
+                              value={this.state.currentlyEditedCategoryOrder}
+                              placeholder={idx + 1}
+                              onChange={this.handleInputChange}
+                            />
+                            <Form.Field 
+                              control={Checkbox}
+                              name='currentlyEditedCategoryPublic'
+                              label='publically viewable category'
+                              checked={this.state.currentlyEditedCategoryPublic}
+                              placeholder={false}
+                              onChange={this.handleInputChange}
+                            />
+                            <div>
+                              <Button onClick={()=> this.updateCategoryToState(category.name)}>Save Category</Button>
+                              <Button onClick={()=> this.setCurrentlyEditedCategory('')}>Cancel</Button>
+                            </div>
+                          </Card.Content>
+                        </Card>
+                      ) : ( 
+                        <React.Fragment>
+                          <Card fluid>
+                            <Card.Content>
+                              <Card.Header>{category.name}</Card.Header>
+                              <Card.Description>order: {category.order}</Card.Description>
+                              <Card.Description>isCategoryPublic: {(category.public).toString()}</Card.Description>
+                            </Card.Content>
+                            <Card.Content>
+                              <Button onClick={()=> this.setCurrentlyEditedCategory(category.name)}>Edit</Button>
+                              <Button onClick={()=> this.deleteCategoryFromState(category.name)}>Delete</Button>
+                            </Card.Content>
+                          </Card>
+                        </React.Fragment>
+                      )
+                    }
+                    
+                  </Card.Content>
+                ))
+              }
+            </Card.Content>
+            <Card.Content>
+              <Card.Header>Add new Category:</Card.Header>
+            </Card.Content>
+            <Card.Content>
+              <Form.Field 
+                control={Input}
+                name='currentlyEditedCategoryName'
+                label='category name'
+                value={this.state.currentlyEditedCategoryName}
+                placeholder='category name'
+                onChange={this.handleInputChange}
+              />
+              <Form.Field 
+                control={Input}
+                name='currentlyEditedCategoryOrder'
+                label='category display priority, from left to right'
+                value={this.state.currentlyEditedCategoryOrder}
+                placeholder={100}
+                onChange={this.handleInputChange}
+              />
+              <Form.Field 
+                control={Checkbox}
+                name='currentlyEditedCategoryPublic'
+                label='publically viewable category'
+                checked={this.state.currentlyEditedCategoryPublic}
+                placeholder={false}
+                onChange={this.handleInputChange}
+              />
+              <div>
+                <Button onClick={()=> this.addCategoryToState()}>Save Category</Button>
+              </div>
+            </Card.Content>
+          </Card>
+          <Button onClick={this.onUserUpdate}>Submit</Button>
+        </Form>
+      </Card.Content></Card>
     )
   }
 

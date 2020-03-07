@@ -32,6 +32,7 @@ interface ItemsProps {
   layout: layoutItem[]
   setLayout: (layout: layoutItem[]) => void,
   // the following comes from AuthWrapper HoC
+  isAuthenticated: any
   idToken: string,
   userId: string
 }
@@ -63,19 +64,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
 
   async componentDidMount() {
     try {
-      const layout = await getLayoutByUserId(
-        this.props.idToken,
-        this.props.userId,
-      )
-      
-      const allItems = getItemsFromLayout(layout)
-
-      this.props.setLayout(layout)
-
-      this.setState({
-        loadingItems: false,
-        items: allItems
-      })
+      this.fetchLayoutAndItems();
     } catch (e) {
       alert(`Failed to fetch items: ${e.message}`)
     }
@@ -105,18 +94,37 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
 
       await patchItem(idToken, targetItem.id, modifiedTargetItem);
       await patchItem(idToken, originalItem.id, modifiedOriginalItem);
-      const newLayout = await getLayoutByUserId(idToken, userId );
-
-      const allItems = getItemsFromLayout(newLayout);
-
-      this.props.setLayout(newLayout)
-      this.setState({
-        items: allItems,
-      });
+      
+      this.fetchLayoutAndItems()
 
     } catch (e) {
       alert(`Failed to move items: ${e.message}`)
     }
+  }
+
+  deleteItem = async (itemId: string) => {
+    const { idToken, userId } = this.props
+    try {
+      if(this.props.isAuthenticated) {
+        await deleteItem(idToken, itemId)
+
+        this.fetchLayoutAndItems();
+      }
+      
+    } catch (e) {
+      alert('Item deletion failed');
+    }
+  }
+
+  fetchLayoutAndItems = async () => {
+    const { idToken, userId } = this.props
+    const newLayout = await getLayoutByUserId(idToken, userId );
+    const allItems = getItemsFromLayout(newLayout);
+    this.props.setLayout(newLayout)
+    this.setState({
+      loadingItems: false,
+      items: allItems,
+    });
   }
 
   render() {
@@ -130,6 +138,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
       <ItemsContext.Provider value={{
         items: this.state.items,
         moveSubItem: this.moveSubItem,
+        deleteItem: this.deleteItem,
       }}>
         <Header as="h1">Items</Header>
         <Grid columns={3} doubling stackable>

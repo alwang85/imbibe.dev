@@ -6,6 +6,7 @@ import * as React from 'react'
 import {
   Button,
   Form,
+  Icon,
   Input,
   TextArea,
   Card,
@@ -60,6 +61,10 @@ interface ItemsState {
   newSubItemDescription: string
   newSubItemUrl: string
   currentlyEditedSubitem: string
+  currentlyEditedSubItemAnchorText: string
+  currentlyEditedSubItemTitle: string
+  currentlyEditedSubItemDescription: string
+  currentlyEditedSubItemUrl: string
   hasUnsavedChanges: boolean
 }
 
@@ -75,6 +80,10 @@ const initialItemsState = {
   newSubItemDescription: '',
   newSubItemUrl: '',
   newSubItemAnchorText: '',
+  currentlyEditedSubItemAnchorText: '',
+  currentlyEditedSubItemTitle: '',
+  currentlyEditedSubItemDescription: '',
+  currentlyEditedSubItemUrl: '',
   currentlyEditedSubitem: '',
   hasUnsavedChanges: false,
 }
@@ -131,10 +140,10 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
     //@ts-ignore-block
     this.setState({
       currentlyEditedSubitem: subItemId,
-      newSubItemTitle: usedFields.title,
-      newSubItemDescription: usedFields.description,
-      newSubItemUrl: usedFields.url,
-      newSubItemAnchorText: usedFields.anchorText,
+      currentlyEditedSubItemTitle: usedFields.title,
+      currentlyEditedSubItemDescription: usedFields.description,
+      currentlyEditedSubItemUrl: usedFields.url,
+      currentlyEditedSubItemAnchorText: usedFields.anchorText,
     })
   }
 
@@ -180,10 +189,10 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
       if(subItem.id === subItemId) {
         return {
           ...subItem,
-          title: this.state.newSubItemTitle,
-          description: this.state.newSubItemDescription,
-          url: this.state.newSubItemUrl,
-          anchorText: this.state.newSubItemAnchorText,
+          title: this.state.currentlyEditedSubItemTitle,
+          description: this.state.currentlyEditedSubItemDescription,
+          url: this.state.currentlyEditedSubItemUrl,
+          anchorText: this.state.currentlyEditedSubItemAnchorText,
           modifiedAt: new Date().toISOString(),
         }
       } else {
@@ -318,57 +327,58 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
                     {
                       this.state.currentlyEditedSubitem === subItem.id ?
                       (
-                        <React.Fragment>
+                        <Card><Card.Content>
                           <Form.Field 
                             control={Input}
-                            name='newSubItemTitle'
-                            label='newSubItemTitle'
-                            value={this.state.newSubItemTitle}
+                            name='currentlyEditedSubItemTitle'
+                            label='currentlyEditedSubItemTitle'
+                            value={this.state.currentlyEditedSubItemTitle}
                             placeholder='title'
                             onChange={this.handleInputChange}
                           />
                           <Form.Field 
                             control={TextareaAutosize}
-                            name='newSubItemDescription'
-                            label='newSubItemDescription'
-                            value={this.state.newSubItemDescription}
+                            name='currentlyEditedSubItemDescription'
+                            label='currentlyEditedSubItemDescription'
+                            value={this.state.currentlyEditedSubItemDescription}
                             placeholder='description'
                             onChange={this.handleTextBoxChange}
                           />
                           <Form.Field 
                             control={Input}
-                            name='newSubItemUrl'
-                            label='newSubItemUrl'
-                            value={this.state.newSubItemUrl}
+                            name='currentlyEditedSubItemUrl'
+                            label='currentlyEditedSubItemUrl'
+                            value={this.state.currentlyEditedSubItemUrl}
                             placeholder='url (optional)'
                             onChange={this.handleInputChange}
                           />
                           <Form.Field 
                             control={Input}
-                            name='newSubItemAnchorText'
-                            label='newSubItemAnchorText'
-                            value={this.state.newSubItemAnchorText}
+                            name='currentlyEditedSubItemAnchorText'
+                            label='currentlyEditedSubItemAnchorText'
+                            value={this.state.currentlyEditedSubItemAnchorText}
                             placeholder='anchor text for url (required if url to be shown)'
                             onChange={this.handleInputChange}
                           />
                           <div>
-                            <Button onClick={()=> this.updateSubItemToState(subItem.id)}>Save SubItem</Button>
-                            <Button onClick={()=> this.setCurrentlyEditedSubItem('')}>Cancel</Button>
+                            <Button icon onClick={()=> this.updateSubItemToState(subItem.id)}>Save SubItem</Button>
+                            <Button icon onClick={()=> this.setCurrentlyEditedSubItem('')}>Cancel</Button>
                             <WrappedMoveItem item={this.props.item} subItem={subItem} hasUnsavedChanges={this.state.hasUnsavedChanges} />
                           </div>
-                        </React.Fragment>
+                        </Card.Content></Card>
                       ) : ( 
-                        <React.Fragment>
+                        <Card fluid>
                           <Card.Content>
                             <Card.Header>{subItem.title}</Card.Header>
                             <Card.Description>{subItem.description}</Card.Description>
+                            {subItem.url && <Card.Content><a href={subItem.url} target="_blank">{subItem.anchorText || "no anchor text"}</a></Card.Content>}
                           </Card.Content>
                           <Card.Content>
-                            <Button onClick={()=> this.setCurrentlyEditedSubItem(subItem.id)}>Edit this SubItem</Button>
-                            <Button onClick={()=> this.deleteSubItemFromState(subItem.id)}>Delete this SubItem</Button>
+                            <Button icon onClick={()=> this.setCurrentlyEditedSubItem(subItem.id)}>Edit</Button>
+                            <Button icon onClick={()=> this.deleteSubItemFromState(subItem.id)}><Icon name='trash' /></Button>
                             <WrappedMoveItem item={this.props.item} subItem={subItem} hasUnsavedChanges={this.state.hasUnsavedChanges }/>
                           </Card.Content>
-                        </React.Fragment>
+                        </Card>
                       )
                     }
                     
@@ -376,46 +386,50 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
 
                 ))
               }
-                <Card.Content>
+                <Card><Card.Content>
                   <Card.Header>Add Subitem</Card.Header>
-                  <Form.Field 
-                    control={Input}
-                    name='newSubItemTitle'
-                    label='newSubItemTitle'
-                    value={this.state.newSubItemTitle}
-                    placeholder='title'
-                    onChange={this.handleInputChange}
-                  />
-                  <Form.Field 
-                    control={TextareaAutosize}
-                    name='newSubItemDescription'
-                    label='newSubItemDescription'
-                    value={this.state.newSubItemDescription}
-                    placeholder='description'
-                    onChange={this.handleTextBoxChange}
-                  />
-                  <Form.Field 
-                    control={Input}
-                    name='newSubItemUrl'
-                    label='newSubItemUrl'
-                    value={this.state.newSubItemUrl}
-                    placeholder='url (optional)'
-                    onChange={this.handleInputChange}
-                  />
-                  <Form.Field 
-                    control={Input}
-                    name='newSubItemAnchorText'
-                    label='newSubItemAnchorText'
-                    value={this.state.newSubItemAnchorText}
-                    placeholder='anchor text for url (required if url to be shown)'
-                    onChange={this.handleInputChange}
-                  />
-                  <Button onClick={this.addSubItemToState}>Add SubItem</Button>
-                </Card.Content>
+                  <Card.Content>
+                    <Form.Field 
+                      control={Input}
+                      name='newSubItemTitle'
+                      label='newSubItemTitle'
+                      value={this.state.newSubItemTitle}
+                      placeholder='title'
+                      onChange={this.handleInputChange}
+                    />
+                    <Form.Field 
+                      control={TextareaAutosize}
+                      name='newSubItemDescription'
+                      label='newSubItemDescription'
+                      value={this.state.newSubItemDescription}
+                      placeholder='description'
+                      onChange={this.handleTextBoxChange}
+                    />
+                    <Form.Field 
+                      control={Input}
+                      name='newSubItemUrl'
+                      label='newSubItemUrl'
+                      value={this.state.newSubItemUrl}
+                      placeholder='url (optional)'
+                      onChange={this.handleInputChange}
+                    />
+                    <Form.Field 
+                      control={Input}
+                      name='newSubItemAnchorText'
+                      label='newSubItemAnchorText'
+                      value={this.state.newSubItemAnchorText}
+                      placeholder='anchor text for url (required if url to be shown)'
+                      onChange={this.handleInputChange}
+                    />
+                  </Card.Content>
+                  <Card.Content>
+                    <Button icon onClick={this.addSubItemToState}>Add SubItem</Button>
+                  </Card.Content>
+                </Card.Content></Card>
               </Card.Content>
             </Card>
-            <Button onClick={this.props.toggleEditItem}>Cancel</Button>
-            <Button onClick={this.onItemUpdate}>Save Changes</Button>
+            <Button icon onClick={this.props.toggleEditItem}>Cancel</Button>
+            <Button icon onClick={this.onItemUpdate}>Save Changes</Button>
           </Form>
         </Card.Content>
       </Card>

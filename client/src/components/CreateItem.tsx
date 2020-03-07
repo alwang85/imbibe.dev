@@ -70,6 +70,11 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
     ...initialItemsState
   }
 
+  componentWillMount = () => {
+    const { categoryName } = this.props;
+    if(categoryName) this.setState({ newItemCategory : categoryName });
+  }
+
   toggleForm = () => {
     this.setState({
       showForm: !this.state.showForm,
@@ -176,106 +181,110 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
 
   renderCreateItemInput(categoryOptions: any) {
     return (
-      <Form>
-        <Form.Field 
-          control={Input}
-          name='newItemTitle'
-          label='title'
-          placeholder='title'
-          value={this.state.newItemTitle}
-          onChange={this.handleInputChange}
-        />
-        <Form.Field 
-          control={TextareaAutosize}
-          name='newItemDescription'
-          label='description'
-          placeholder='description'
-          value={this.state.newItemDescription}
-          onChange={this.handleTextBoxChange}
-        />
-        <Form.Field
-          control={Dropdown}
-          placeholder='Select Category'
-          name='newItemCategory'
-          label='category'
-          options={categoryOptions}
-          value={this.state.newItemCategory}
-          onChange={this.handleInputChange}
-        />
-        <Form.Field 
-          control={Input}
-          name='newItemUrl'
-          label='url'
-          placeholder='url (optional)'
-          value={this.state.newItemUrl}
-          onChange={this.handleInputChange}
-        />
-        <Form.Field 
-          control={Input}
-          name='newItemAnchorText'
-          label='anchorText'
-          placeholder='anchor text for url (required if url to be shown)'
-          value={this.state.newItemAnchorText}
-          onChange={this.handleInputChange}
-        />
-        <Card fluid>
-          <Card.Content>
-            <Card.Header>Subitems (optional)</Card.Header>
-          </Card.Content>
-          <Card.Content>
-            {
-              this.state.newItemSubItems.map(subItem => (
-                <div key={subItem.id}>
-                  <div>title: {subItem.title}</div>
-                  <div>description: {subItem.description}</div>
-                  <div>url: {subItem.url}</div>
-                  <div>anchorText: {subItem.anchorText}</div>
-                </div>
-              ))
-            }
-          </Card.Content>
-          {
+      <Card fluid>
+        <Card.Content><Form>
+          <Form.Field 
+            control={Input}
+            name='newItemTitle'
+            label='title'
+            placeholder='title'
+            value={this.state.newItemTitle}
+            onChange={this.handleInputChange}
+          />
+          <Form.Field 
+            control={TextareaAutosize}
+            name='newItemDescription'
+            label='description'
+            placeholder='description'
+            value={this.state.newItemDescription}
+            onChange={this.handleTextBoxChange}
+          />
+          <Form.Field
+            control={Dropdown}
+            placeholder='Select Category'
+            name='newItemCategory'
+            label='category'
+            options={categoryOptions}
+            value={this.state.newItemCategory}
+            onChange={this.handleInputChange}
+          />
+          <Form.Field 
+            control={Input}
+            name='newItemUrl'
+            label='url'
+            placeholder='url (optional)'
+            value={this.state.newItemUrl}
+            onChange={this.handleInputChange}
+          />
+          <Form.Field 
+            control={Input}
+            name='newItemAnchorText'
+            label='anchorText'
+            placeholder='anchor text for url (required if url to be shown)'
+            value={this.state.newItemAnchorText}
+            onChange={this.handleInputChange}
+          />
+          <Card fluid>
             <Card.Content>
-              <Card.Header>Add Subitem</Card.Header>
-              <Form.Field 
-                control={Input}
-                name='newSubItemTitle'
-                label='newSubItemTitle'
-                value={this.state.newSubItemTitle}
-                placeholder='title'
-                onChange={this.handleInputChange}
-              />
-              <Form.Field 
-                control={TextareaAutosize}
-                name='newSubItemDescription'
-                label='newSubItemDescription'
-                value={this.state.newSubItemDescription}
-                placeholder='description'
-                onChange={this.handleTextBoxChange}
-              />
-              <Form.Field 
-                control={Input}
-                name='newSubItemUrl'
-                label='newSubItemUrl'
-                value={this.state.newSubItemUrl}
-                placeholder='url (optional)'
-                onChange={this.handleInputChange}
-              />
-              <Form.Field 
-                control={Input}
-                name='newSubItemAnchorText'
-                label='newSubItemAnchorText'
-                value={this.state.newSubItemAnchorText}
-                placeholder='anchor text for url (required if url to be shown)'
-                onChange={this.handleInputChange}
-              />
-              <Button onClick={this.addSubitemToState}>Add SubItem</Button>
+              <Card.Header>Subitems (optional)</Card.Header>
             </Card.Content>
-          }
+            <Card.Content>
+              {
+                this.state.newItemSubItems.map(subItem => (
+                  // <Card key={subItem.id}>
+                    <Card.Content key={subItem.id}>
+                      <Card.Header>{subItem.title}</Card.Header>
+                      <Card.Description>{subItem.description}</Card.Description>
+                      {subItem.url && <Card.Content><a href={subItem.url} target="_blank">{subItem.anchorText || "no anchor text"}</a></Card.Content>}
+                    </Card.Content>
+                  // </Card>
+                ))
+              }
+            </Card.Content>
+            {
+              <Card.Content>
+                <Card.Header>Add Subitem</Card.Header>
+                <Form.Field 
+                  control={Input}
+                  name='newSubItemTitle'
+                  label='newSubItemTitle'
+                  value={this.state.newSubItemTitle}
+                  placeholder='title'
+                  onChange={this.handleInputChange}
+                />
+                <Form.Field 
+                  control={TextareaAutosize}
+                  name='newSubItemDescription'
+                  label='newSubItemDescription'
+                  value={this.state.newSubItemDescription}
+                  placeholder='description'
+                  onChange={this.handleTextBoxChange}
+                />
+                <Form.Field 
+                  control={Input}
+                  name='newSubItemUrl'
+                  label='newSubItemUrl'
+                  value={this.state.newSubItemUrl}
+                  placeholder='url (optional)'
+                  onChange={this.handleInputChange}
+                />
+                <Form.Field 
+                  control={Input}
+                  name='newSubItemAnchorText'
+                  label='newSubItemAnchorText'
+                  value={this.state.newSubItemAnchorText}
+                  placeholder='anchor text for url (required if url to be shown)'
+                  onChange={this.handleInputChange}
+                />
+                <Button onClick={this.addSubitemToState}>Add SubItem</Button>
+              </Card.Content>
+            }
 
-        </Card>
-        <Button onClick={this.onItemCreate}>Submit</Button>
-      </Form>
+          </Card>
+          <Button onClick={this.toggleForm}>Cancel</Button>
+          <Button onClick={this.onItemCreate}>Submit</Button>
+        </Form></Card.Content>
+      </Card>
     )
   }
 }
