@@ -13,10 +13,10 @@
       "type": "string"
     },
     "url": {
-      "type": "string"
+      "type": ["string", "null"]
     },
     "anchorText": {
-      "type": "string"
+      "type": ["string", "null"]
     },
     "subItems": {
       "type": "array"

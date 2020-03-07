@@ -15,6 +15,7 @@ import {
 
 import { WrappedCreateItem } from './CreateItem'
 import { Item } from '../types/Item'
+import { SubItem } from '../types/SubItem'
 
 interface CategoryColumnProps {
   categoryName: string
@@ -35,7 +36,7 @@ export class CategoryColumn extends React.PureComponent<CategoryColumnProps, Cat
         { crud && items.length > 0 && <WrappedCreateItem categoryName={categoryName} position="top"/>}
         {
           items.length > 0 && items.map(item => (
-            <ItemSlot key={item.id} item={item} crud={crud}/>
+            <ItemSlot key={JSON.stringify(item)} item={item} crud={crud}/>
           ))
         }
         { crud && <WrappedCreateItem categoryName={categoryName} position="bottom"/>}

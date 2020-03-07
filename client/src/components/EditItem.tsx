@@ -19,6 +19,7 @@ import { getLayoutByUserId } from '../api/layout-api'
 import { UserWrapper } from '../context/userContext'
 import { LayoutWrapper } from '../context/layoutContext'
 import { AuthWrapper } from '../context/auth0-context';
+import { WrappedMoveItem } from './MoveItem'
 import { User } from '../types/User'
 import { Item } from '../types/Item'
 import { SubItem } from '../types/SubItem'
@@ -35,6 +36,8 @@ interface ToggleItemFunc {
 interface ItemsProps {
   item: Item,
   toggleEditItem: ToggleItemFunc
+  items: Item[]
+  moveSubItem?: (movedSubItem: SubItem, originalItem: Item, targetItem: Item) => void
   // the below is from User HoC
   user: User
   // the below is from Layout HoC
@@ -57,6 +60,7 @@ interface ItemsState {
   newSubItemDescription: string
   newSubItemUrl: string
   currentlyEditedSubitem: string
+  hasUnsavedChanges: boolean
 }
 
 const initialItemsState = {
@@ -72,6 +76,7 @@ const initialItemsState = {
   newSubItemUrl: '',
   newSubItemAnchorText: '',
   currentlyEditedSubitem: '',
+  hasUnsavedChanges: false,
 }
 export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
   state: ItemsState = {
@@ -96,7 +101,8 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
 
     this.setState({
       ...this.state,
-      [name]: value
+      [name]: value,
+      hasUnsavedChanges: true,
     });
   }
 
@@ -106,7 +112,8 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
 
     this.setState({
       ...this.state,
-      [name]: value
+      [name]: value,
+      hasUnsavedChanges: true,
     });
   }
 
@@ -139,6 +146,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
     this.setState({
       ...this.state,
       newItemSubItems: newArray,
+      hasUnsavedChanges: true,
     })
   }
 
@@ -163,6 +171,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
       newSubItemDescription: '',
       newSubItemUrl: '',
       newSubItemAnchorText: '',
+      hasUnsavedChanges: true,
     });
   }
 
@@ -189,6 +198,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
       newSubItemDescription: '',
       newSubItemUrl: '',
       newSubItemAnchorText: '',
+      hasUnsavedChanges: true,
     })
   }
 
@@ -213,6 +223,10 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
       )
       
       console.log('item update success', newItem)
+
+      this.setState({
+        hasUnsavedChanges: false,
+      });
 
       const updatedLayout = await getLayoutByUserId(
         this.props.idToken,
@@ -340,6 +354,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
                           <div>
                             <Button onClick={()=> this.updateSubItemToState(subItem.id)}>Save SubItem</Button>
                             <Button onClick={()=> this.setCurrentlyEditedSubItem('')}>Cancel</Button>
+                            <WrappedMoveItem item={this.props.item} subItem={subItem} hasUnsavedChanges={this.state.hasUnsavedChanges} />
                           </div>
                         </React.Fragment>
                       ) : ( 
@@ -351,6 +366,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
                           <Card.Content>
                             <Button onClick={()=> this.setCurrentlyEditedSubItem(subItem.id)}>Edit this SubItem</Button>
                             <Button onClick={()=> this.deleteSubItemFromState(subItem.id)}>Delete this SubItem</Button>
+                            <WrappedMoveItem item={this.props.item} subItem={subItem} hasUnsavedChanges={this.state.hasUnsavedChanges }/>
                           </Card.Content>
                         </React.Fragment>
                       )

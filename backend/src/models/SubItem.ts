@@ -4,6 +4,6 @@ export interface SubItem {
   description: string,
   createdAt: string
   modifiedAt: string
-  url?: string
-  anchorText?: string
+  url?: string | null
+  anchorText?: string | null
 }
