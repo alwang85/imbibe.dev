@@ -199,8 +199,6 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
   }
 
   render() {
-    const { isProfilePublic, displayName, categories } = this.state;
-
     return (
       <Card fluid><Card.Content>
         <Form>
