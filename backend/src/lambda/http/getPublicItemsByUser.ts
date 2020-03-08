@@ -41,6 +41,9 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
       const items = await getAllItems(user.userId);
       logger.info('all items obtained here', items);
 
+      // @ts-ignore
+      items.sort((a, b) => new Date(b.modifiedAt) - new Date(a.modifiedAt))
+
       const filteredItems = items.filter(item => userPublicCategoryNames.includes(item.category)) || [];
       logger.info('filtered items', filteredItems);
       

@@ -78,6 +78,7 @@ export async function updateItem(
     ...item,
     url: item.url || null,
     anchorText: item.anchorText || null,
+    modifiedAt: new Date().toISOString(),
     subItems: newSubItems
   }, currentUserId)
 }
