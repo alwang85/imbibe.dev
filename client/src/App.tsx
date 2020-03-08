@@ -60,7 +60,6 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   setUser = (user: User, forceUpdate?: boolean) => {
-    // console.log('user in setUser', user)
     if(this.state.isInitialAuthenticatedLoad || forceUpdate) {
       this.setState({
         userState: {

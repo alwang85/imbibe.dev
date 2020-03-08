@@ -1,5 +1,6 @@
+import * as React from 'react';
 import * as uuid from 'uuid';
-import * as React from 'react'
+
 import {
   Button,
   Card,

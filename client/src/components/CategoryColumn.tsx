@@ -21,7 +21,6 @@ export class CategoryColumn extends React.PureComponent<CategoryColumnProps, Cat
     return (
       <Grid.Column>
         <h1>{categoryName}</h1>
-        { /* TODO this create item does not clos after creation */}
         { crud && items.length > 0 && <WrappedCreateItem categoryName={categoryName} position="top"/>}
         {
           items.length > 0 && items.map(item => (

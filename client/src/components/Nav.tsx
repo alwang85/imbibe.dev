@@ -48,9 +48,13 @@ export default class Nav extends Component<NavProps, NavState> {
           )
         }
         <Menu.Menu position="right">
-          <Menu.Item name="profile">
-            <Link to="/profile">Profile</Link>
-          </Menu.Item>
+          {
+            isAuthenticated && (
+              <Menu.Item name="profile">
+                <Link to="/profile">Profile</Link>
+              </Menu.Item>
+            )
+          }
           {this.logInLogOutButton()}
         </Menu.Menu>
       </Menu>
