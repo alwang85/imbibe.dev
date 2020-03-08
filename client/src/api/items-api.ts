@@ -1,7 +1,6 @@
 import Axios from 'axios'
 import { apiEndpoint } from '../config'
 import { Item } from '../types/Item';
-import get from 'lodash/get';
 import { CreateItemRequest } from '../types/CreateItemRequest';
 import { UpdateItemRequest } from '../types/UpdateItemRequest';
 

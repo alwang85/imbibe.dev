@@ -1,22 +1,11 @@
 import * as React from 'react'
 import { ItemSlot } from '../components/ItemSlot';
 import {
-  Accordion,
-  Card,
   Grid,
-  Button,
-  Icon,
-  Form,
-  Input,
-  TextArea,
-  CardContent,
-  AccordionPanel
 } from 'semantic-ui-react'
 
 import { WrappedCreateItem } from './CreateItem'
 import { Item } from '../types/Item'
-import { SubItem } from '../types/SubItem'
-
 interface CategoryColumnProps {
   categoryName: string
   items: Item[]

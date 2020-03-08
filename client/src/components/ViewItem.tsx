@@ -1,27 +1,15 @@
-import dateFormat from 'dateformat'
-import { History } from 'history'
-import update from 'immutability-helper'
-import * as uuid from 'uuid';
 import * as React from 'react'
 import {
   Accordion,
-  Card,
   Button,
+  Card,
   Icon,
-  Form,
-  Input,
-  TextArea,
-  CardContent,
-  AccordionPanel
 } from 'semantic-ui-react'
 
-import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
 import { ItemsWrapper } from '../context/itemsContext';
 import { UserWrapper } from '../context/userContext'
 import { AuthWrapper } from '../context/auth0-context';
-import { LayoutWrapper } from '../context/layoutContext'
 import { Item } from '../types/Item'
-import { SubItem } from '../types/SubItem'
 
 interface ToggleItemFunc {
   (): void;

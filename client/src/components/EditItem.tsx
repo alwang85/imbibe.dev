@@ -1,21 +1,16 @@
-import dateFormat from 'dateformat'
-import { History } from 'history'
-import update from 'immutability-helper'
 import * as uuid from 'uuid';
 import * as React from 'react'
 import {
   Button,
+  Card,
+  Dropdown,
   Form,
   Icon,
   Input,
-  TextArea,
-  Card,
-  CardContent,
-  Dropdown
 } from 'semantic-ui-react'
 import TextareaAutosize from "react-textarea-autosize";
 
-import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
+import { patchItem } from '../api/items-api'
 import { getLayoutByUserId } from '../api/layout-api'
 import { UserWrapper } from '../context/userContext'
 import { LayoutWrapper } from '../context/layoutContext'
