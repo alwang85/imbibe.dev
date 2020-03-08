@@ -1,20 +1,12 @@
-import dateFormat from 'dateformat'
-import update from 'immutability-helper'
 import * as React from 'react'
 import {
-  Button,
-  Checkbox,
-  Divider,
   Grid,
   Header,
-  Icon,
-  Input,
-  Image,
   Loader
 } from 'semantic-ui-react'
 import isEqual from 'lodash.isequal';
 
-import { createItem, deleteItem, getItems, patchItem } from '../api/items-api'
+import { deleteItem, patchItem } from '../api/items-api'
 import { getLayoutByUserId } from '../api/layout-api'
 import { LayoutWrapper } from '../context/layoutContext'
 import { CategoryColumn } from '../components/CategoryColumn'

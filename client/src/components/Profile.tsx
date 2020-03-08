@@ -1,18 +1,10 @@
-import dateFormat from 'dateformat'
-import update from 'immutability-helper'
 import * as React from 'react'
 import {
   Button,
   Card,
   Checkbox,
-  Divider,
   Form,
-  Grid,
-  Header,
-  Icon,
   Input,
-  Image,
-  Loader
 } from 'semantic-ui-react'
 
 import { getUser, patchUser, getDisplayNameAvailability } from '../api/users-api'

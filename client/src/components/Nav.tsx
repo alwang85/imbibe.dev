@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Link, Route, Router, Switch } from 'react-router-dom'
-import { Grid, Menu, Segment } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
+import { Menu } from 'semantic-ui-react'
 import { AuthWrapper } from '../context/auth0-context';
 
 export interface NavProps {}

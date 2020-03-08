@@ -2,7 +2,6 @@ import * as React from 'react'
 import { WrappedViewItem } from './ViewItem';
 import { WrappedEditItem } from './EditItem';
 import { Item } from '../types/Item'
-import { SubItem } from '../types/SubItem'
 
 /*
   Used as a slot that toggles between editable/displayed items
