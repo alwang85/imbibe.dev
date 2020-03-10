@@ -2,11 +2,15 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Menu } from 'semantic-ui-react'
 import { AuthWrapper } from '../context/auth0-context';
+import { UserWrapper } from '../context/userContext';
+import { User } from '../types/User';
 
 export interface NavProps {}
 
 export interface NavProps {
   history: any
+  // the following comes from user HoC
+  user: User,
   // sadly HOC's can't read the types by default, unlike hooks? Or so I recall 
   userInfo: any,
   loginWithRedirect: any,
@@ -30,7 +34,8 @@ export default class Nav extends Component<NavProps, NavState> {
   }
 
   generateMenu() {
-    const { isAuthenticated } = this.props;
+    const { isAuthenticated, user: { isProfilePublic = false, displayName= ''} = {} } = this.props;
+
     return (
       <Menu>
         <Menu.Item name="home">
@@ -48,6 +53,13 @@ export default class Nav extends Component<NavProps, NavState> {
           )
         }
         <Menu.Menu position="right">
+          {
+            isAuthenticated && isProfilePublic && (
+              <Menu.Item name="publicProfile">
+                <Link to={`/public/${displayName}`}>Your Public Profile</Link>
+              </Menu.Item>
+            )
+          }
           {
             isAuthenticated && (
               <Menu.Item name="profile">
@@ -78,4 +90,4 @@ export default class Nav extends Component<NavProps, NavState> {
   }
 }
 
-export const WrappedNav = AuthWrapper(Nav);
+export const WrappedNav = UserWrapper(AuthWrapper(Nav));

@@ -79,31 +79,36 @@ export class PublicItems extends React.PureComponent<PublicItemsProps, PublicIte
       return this.renderLoading()
     }
 
+    const publicProfile = (
+      description && <Card fluid>
+        <Card.Content textAlign="center">
+          { profileImageUrl && <Image src={profileImageUrl} wrapped ui={false} size="tiny" centered /> }
+        </Card.Content>
+        <Card.Content>
+          <Card.Description>
+            <span dangerouslySetInnerHTML={{ __html: mdDisplay.render(description)}} />
+          </Card.Description>
+        </Card.Content>
+      </Card>
+    );
+
     return (
       <div>
-        <Grid columns={3} divided stackable>
+        <br />
+        <Grid columns={3} stackable>
           <Grid.Row>
             {
-              layout && layout.length && layout.map(categoryItem => (
+              layout && layout.length && layout.map((categoryItem, idx) => (
                 <CategoryColumn 
                   key={categoryItem.category}
                   items={categoryItem.items}
                   categoryName={categoryItem.category}
                   crud={false}
+                  // @ts-ignore
+                  profile={idx === (layout.length - 1) && publicProfile}
                 />
               ))
             }
-            <Grid.Column>
-              { description && <Card>
-              { profileImageUrl && <Image src={profileImageUrl} wrapped ui={false} /> }
-                <Card.Content>
-                  <Card.Description>
-                    <span dangerouslySetInnerHTML={{ __html: mdDisplay.render(description)}} />
-                  </Card.Description>
-                </Card.Content>
-                
-              </Card>}
-            </Grid.Column>
           </Grid.Row>
         </Grid>
       </div>

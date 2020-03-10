@@ -336,6 +336,7 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
               </Form>
             </Card.Content>
             <Card.Content>
+            <Card.Header>Description- shows up in the top of the last category available to public view</Card.Header>
             <MdEditor
               value={this.state.description || ""}
               renderHTML={(text) => mdParser.render(text)}

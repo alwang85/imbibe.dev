@@ -84,17 +84,17 @@ export default class App extends Component<AppProps, AppState> {
   render() {
     return (
       <div>
-        <Segment style={{ padding: '8em 0em' }} vertical>
+        <Segment style={{ padding: '4em 0em' }} vertical>
           <Grid container stackable verticalAlign="middle">
             <Grid.Row>
               <Grid.Column width={16}>
                 <Router history={this.props.history}>
-                  <React.Fragment>
+                  <UserContext.Provider value={this.state.userState} >
                     <WrappedNav history={this.props.history} />
                     <LayoutContext.Provider value={this.state.layoutState}>
                       {this.generateCurrentPage()}
                     </LayoutContext.Provider>
-                  </React.Fragment>
+                  </UserContext.Provider>
                 </Router>
               </Grid.Column>
             </Grid.Row>
@@ -133,7 +133,7 @@ export default class App extends Component<AppProps, AppState> {
     );
 
     const authSwitch = (
-      <UserContext.Provider value={this.state.userState} >
+      <React.Fragment>
         <WrappedGetOrCreateUser
           setUser={this.setUser}
           isInitialAuthenticatedLoad={this.state.isInitialAuthenticatedLoad}
@@ -163,7 +163,7 @@ export default class App extends Component<AppProps, AppState> {
           </PrivateRoute>
           <Route component={NotFound} />
         </Switch>
-      </UserContext.Provider>
+      </React.Fragment>
     )
     // isAuthenticated is the first call in auth0-context.tsx, idToken is the response of the second call
     return this.props.isAuthenticated && this.props.idToken ? authSwitch : unAuthSwitch
