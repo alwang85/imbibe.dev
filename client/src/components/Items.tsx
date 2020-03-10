@@ -63,7 +63,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
   }
 
   moveSubItem = async (movedSubItem: SubItem, originalItem: Item, targetItem: Item) => {
-    const { idToken, userId } = this.props
+    const { idToken } = this.props
     try {
       if(!movedSubItem || !originalItem.subItems || !targetItem.subItems) {
         alert(`Failed to move items`);
@@ -154,6 +154,8 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
   renderLoading() {
     return (
       <Grid.Row>
+        <br />
+        <br />
         <Loader indeterminate active inline="centered">
           Loading Items
         </Loader>

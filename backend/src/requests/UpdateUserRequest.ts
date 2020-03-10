@@ -4,5 +4,6 @@ export interface UpdateUserRequest {
   userId: string,
   isProfilePublic: boolean,
   displayName?: string,
-  categories?: Category[]
+  categories?: Category[],
+  profileImageUrl?: string | null,
 }

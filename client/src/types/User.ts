@@ -4,7 +4,8 @@ export interface User {
   userId: string,
   isProfilePublic: boolean,
   displayName?: string | null,
-  categories?: Category[]
+  categories?: Category[],
+  profileImageUrl: string | null
 }
 
 export const emptyUser = {

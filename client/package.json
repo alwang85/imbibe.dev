@@ -34,6 +34,7 @@
     "@types/styled-components": "^4.1.18",
     "@types/uuid": "^7.0.0",
     "auth0-js": "^9.11.1",
+    "source-map-explorer": "^2.3.1",
     "typescript": "3.4.3"
   },
   "scripts": {
@@ -41,7 +42,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "buildArchive": "npm run build && cd build && zip -r Archive.zip . && cd .."
+    "buildArchive": "npm run build && cd build && zip -r Archive.zip . && cd ..",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": "react-app"

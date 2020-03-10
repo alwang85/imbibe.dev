@@ -41,7 +41,8 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
       ...oldUser,
       isProfilePublic: updatedUser.isProfilePublic,
       displayName: updatedUser.displayName,
-      categories: updatedUser.categories
+      categories: updatedUser.categories,
+      profileImageUrl: updatedUser.profileImageUrl,
     }
 
     logger.info('params in updateUser', params);
