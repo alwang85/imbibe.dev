@@ -16,6 +16,7 @@ const s3 = new XAWS.S3({
 })
 
 const bucketName = process.env.IMAGES_S3_BUCKET
+const thumbnailsBucket = process.env.THUMBNAILS_S3_BUCKET
 const urlExpiration = process.env.SIGNED_URL_EXPIRATION
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -28,7 +29,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
     const oldUser = await getUserById(userIdFromPath);
     const newUser = {
       ...oldUser,
-      profileImageUrl: `https://${bucketName}.s3.us-east-1.amazonaws.com/${imageId}`
+      profileImageUrl: `https://${thumbnailsBucket}.s3.us-east-1.amazonaws.com/${imageId}.jpeg`
     };
 
     await updateUser(newUser, userId);
