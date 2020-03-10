@@ -4,5 +4,6 @@ export interface User {
   userId: string,
   isProfilePublic: boolean,
   displayName: string
-  categories: Category[]
+  categories: Category[],
+  profileImageUrl: string | null
 }

@@ -31,7 +31,8 @@ export async function createUser(
       name: 'unsorted',
       public: false,
       order: 100,
-    }]
+    }],
+    profileImageUrl: null,
   })
 }
 

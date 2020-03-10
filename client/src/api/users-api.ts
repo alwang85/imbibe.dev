@@ -57,3 +57,19 @@ export async function getDisplayNameAvailability(
   return response.data;
 }
 
+export async function getUploadUrl(
+  idToken: string,
+  userId: string
+): Promise<string> {
+  const response = await Axios.post(`${apiEndpoint}/users/${userId}/attachment`, '', {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    }
+  })
+  return response.data.uploadUrl
+}
+
+export async function uploadFile(uploadUrl: string, file: Buffer): Promise<void> {
+  await Axios.put(uploadUrl, file)
+}

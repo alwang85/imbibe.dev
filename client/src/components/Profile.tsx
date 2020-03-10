@@ -5,9 +5,16 @@ import {
   Checkbox,
   Form,
   Input,
+  Image
 } from 'semantic-ui-react'
 
-import { getUser, patchUser, getDisplayNameAvailability } from '../api/users-api'
+import { 
+  getDisplayNameAvailability,
+  getUploadUrl,
+  getUser,
+  patchUser,
+  uploadFile
+} from '../api/users-api'
 import { AuthWrapper } from '../context/auth0-context';
 import { UserWrapper } from '../context/userContext'
 import { User } from '../types/User'
@@ -22,6 +29,12 @@ interface ItemsProps {
   userId: string,
 }
 
+enum UploadState {
+  NoUpload,
+  FetchingPresignedUrl,
+  UploadingFile,
+}
+
 interface ItemsState {
   isProfilePublic: boolean,
   displayName?: string | null,
@@ -30,6 +43,8 @@ interface ItemsState {
   currentlyEditedCategoryOrder: number,
   currentlyEditedCategoryPublic: boolean,
   isDisplayNameAvailable: boolean,
+  file: any
+  uploadState: UploadState
 }
 const initialItemsState = {
   isProfilePublic: false,
@@ -41,9 +56,11 @@ const initialItemsState = {
   isDisplayNameAvailable: true,
 }
 
-export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
+class Profile extends React.PureComponent<ItemsProps, ItemsState> {
   state: ItemsState = {
-    ...initialItemsState
+    ...initialItemsState,
+    file: undefined,
+    uploadState: UploadState.NoUpload
   }
 
   async componentDidMount() {
@@ -58,6 +75,46 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
       })
     } catch (e) {
       alert(`Failed to fetch user: ${e.message}`)
+    }
+  }
+
+  handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (!files) return
+
+    this.setState({
+      file: files[0]
+    })
+  }
+
+  setUploadState(uploadState: UploadState) {
+    this.setState({
+      uploadState
+    })
+  }
+
+  handleImageUpload = async (event: React.SyntheticEvent) => {
+    event.preventDefault()
+
+    try {
+      if (!this.state.file) {
+        alert('File should be selected')
+        return
+      }
+
+      this.setUploadState(UploadState.FetchingPresignedUrl)
+      const uploadUrl = await getUploadUrl(this.props.idToken, this.props.userId)
+
+      this.setUploadState(UploadState.UploadingFile)
+      await uploadFile(uploadUrl, this.state.file)
+      const updatedUser = await getUser(this.props.idToken, this.props.userId);
+      this.props.setUser(updatedUser, true);
+
+      alert('File was uploaded!')
+    } catch (e) {
+      alert('Could not upload a file: ' + e.message)
+    } finally {
+      this.setUploadState(UploadState.NoUpload)
     }
   }
 
@@ -227,6 +284,35 @@ export class Profile extends React.PureComponent<ItemsProps, ItemsState> {
                 placeholder={false}
                 onChange={this.handleInputChange}
               />
+            </Card.Content>
+              { this.props.user.profileImageUrl && (
+                <Card.Content>
+                  <Image src={this.props.user.profileImageUrl} size="small" wrapped />
+                </Card.Content>
+              )}
+            <Card.Content>
+              <Form onSubmit={this.handleImageUpload}>
+                <Form.Field>
+                  <label>Profile Pic</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    placeholder="Image to upload"
+                    onChange={this.handleFileChange}
+                  />
+                </Form.Field>
+
+                <div>
+                  {this.state.uploadState === UploadState.FetchingPresignedUrl && <p>Uploading image metadata</p>}
+                  {this.state.uploadState === UploadState.UploadingFile && <p>Uploading file</p>}
+                  <Button
+                    loading={this.state.uploadState !== UploadState.NoUpload}
+                    type="submit"
+                  >
+                    Upload
+                  </Button>
+                </div>
+              </Form>
             </Card.Content>
           </Card>
           <Card fluid>

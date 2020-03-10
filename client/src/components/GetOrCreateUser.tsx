@@ -28,7 +28,6 @@ export default class GetOrCreateUser extends Component<GetOrCreateUserProps, Get
       
       try {
         const currentUser = await getUser(idToken, userId);
-        // console.log('existing user', currentUser);
         if(this.props.isInitialAuthenticatedLoad) {
           if (!currentUser) {
             const newUser = await createUser(idToken, { userId })
