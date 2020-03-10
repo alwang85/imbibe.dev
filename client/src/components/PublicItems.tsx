@@ -58,7 +58,7 @@ export class PublicItems extends React.PureComponent<PublicItemsProps, PublicIte
       const publicLayout = await getPublicLayoutByDisplayName(displayName)
       this.props.setLayout(publicLayout)
 
-      const { description, profileImageUrl} = await getUserPublicProfile(displayName);
+      const { description, profileImageUrl } = await getUserPublicProfile(displayName);
 
       this.setState({
         loadingPublicItems: false,

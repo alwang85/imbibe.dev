@@ -4,6 +4,7 @@ import { Grid, Segment, Dimmer, Loader, Image } from 'semantic-ui-react'
 
 import { WrappedNav } from './components/Nav';
 import { NotFound } from './components/NotFound'
+import Homepage from './components/Homepage'
 import { WrappedItems } from './components/Items'
 import { WrappedLogIn } from './components/LogIn'
 import { WrappedProfile } from './components/Profile'
@@ -102,10 +103,7 @@ export default class App extends Component<AppProps, AppState> {
                         <Route
                           path="/"
                           exact
-                          render={props => {
-                            // TODO update to a neighberhood friendly welcome
-                            return <NotFound />
-                          }}
+                          component={Homepage}
                         />
                         <Route
                           path="/public/:displayName"
