@@ -1,14 +1,24 @@
 import * as React from 'react'
 import {
+  Card,
   Grid,
-  Header,
-  Loader
+  Image,
+  Item as ItemComponent,
+  Loader,
 } from 'semantic-ui-react'
+import md from 'markdown-it';
 
 import { getPublicLayoutByDisplayName } from '../api/layout-api'
+import { getUserPublicProfile } from '../api/users-api'
 import { LayoutWrapper } from '../context/layoutContext'
 import { CategoryColumn } from '../components/CategoryColumn'
 import { Item } from '../types/Item'
+
+const mdDisplay = md({
+  html: true,
+  linkify: true,
+  typographer: true
+});
 
 interface PublicItemsProps {
   history: any
@@ -23,6 +33,8 @@ interface layoutItem {
 }
 
 interface PublicItemsState {
+  description?: string | null,
+  profileImageUrl?: string | null,
   loadingPublicItems: boolean
 }
 const initialPublicItemsState = {
@@ -44,16 +56,16 @@ export class PublicItems extends React.PureComponent<PublicItemsProps, PublicIte
 
     try {
       const publicLayout = await getPublicLayoutByDisplayName(displayName)
-      console.log('layout', {
-        displayName,
-        publicLayout
-      })
-
       this.props.setLayout(publicLayout)
 
+      const { description, profileImageUrl} = await getUserPublicProfile(displayName);
+
       this.setState({
-        loadingPublicItems: false
-      })
+        loadingPublicItems: false,
+        description,
+        profileImageUrl,
+      });
+      
     } catch (e) {
       alert(`Failed to fetch PublicItems: ${e.message}`)
     }
@@ -61,6 +73,7 @@ export class PublicItems extends React.PureComponent<PublicItemsProps, PublicIte
 
   render() {
     const { layout } = this.props;
+    const { description, profileImageUrl } = this.state;
 
     if (this.state.loadingPublicItems) {
       return this.renderLoading()
@@ -68,18 +81,29 @@ export class PublicItems extends React.PureComponent<PublicItemsProps, PublicIte
 
     return (
       <div>
-        <Header as="h1"></Header>
         <Grid columns={3} divided stackable>
           <Grid.Row>
             {
               layout && layout.length && layout.map(categoryItem => (
                 <CategoryColumn 
+                  key={categoryItem.category}
                   items={categoryItem.items}
                   categoryName={categoryItem.category}
                   crud={false}
                 />
               ))
             }
+            <Grid.Column>
+              { description && <Card>
+              { profileImageUrl && <Image src={profileImageUrl} wrapped ui={false} /> }
+                <Card.Content>
+                  <Card.Description>
+                    <span dangerouslySetInnerHTML={{ __html: mdDisplay.render(description)}} />
+                  </Card.Description>
+                </Card.Content>
+                
+              </Card>}
+            </Grid.Column>
           </Grid.Row>
         </Grid>
       </div>
@@ -92,7 +116,7 @@ export class PublicItems extends React.PureComponent<PublicItemsProps, PublicIte
         <br />
         <br />
         <Loader indeterminate active inline="centered">
-          Loading Items
+          Loading...
         </Loader>
       </Grid.Row>
     )

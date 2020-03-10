@@ -47,10 +47,22 @@ export async function getDisplayNameAvailability(
   idToken: string,
   displayName: string,
 ): Promise<{ displayNameAvailable: boolean}> {
-  const response = await Axios.get(`${apiEndpoint}/users/public/${displayName}`, {
+  const response = await Axios.get(`${apiEndpoint}/users/public/availability/${displayName}`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
+    }
+  })
+
+  return response.data;
+}
+
+export async function getUserPublicProfile(
+  displayName: string,
+): Promise<{ description: string | null, profileImageUrl: string | null}> {
+  const response = await Axios.get(`${apiEndpoint}/users/public/profile/${displayName}`, {
+    headers: {
+      'Content-Type': 'application/json'
     }
   })
 
