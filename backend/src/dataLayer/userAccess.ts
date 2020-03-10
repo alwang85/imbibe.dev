@@ -72,13 +72,14 @@ export class UserAccess {
       Key: {
         userId: userObject.userId,
       },
-      UpdateExpression: "set isProfilePublic=:isProfilePublic, displayName=:displayName, categories=:categories, profileImageUrl=:profileImageUrl",
+      UpdateExpression: "set isProfilePublic=:isProfilePublic, displayName=:displayName, categories=:categories, profileImageUrl=:profileImageUrl, description=:description",
       ExpressionAttributeValues:{
         ":currentUserId": currentUserId,
         ":isProfilePublic": userObject.isProfilePublic,
         ":displayName": userObject.displayName,
         ":categories": userObject.categories,
         ":profileImageUrl": userObject.profileImageUrl,
+        ":description": userObject.description,
       },
       ConditionExpression: 'userId = :currentUserId',
     }).promise()

@@ -5,7 +5,8 @@ export interface User {
   isProfilePublic: boolean,
   displayName?: string | null,
   categories?: Category[],
-  profileImageUrl: string | null
+  profileImageUrl: string | null,
+  description: string | null,
 }
 
 export const emptyUser = {
