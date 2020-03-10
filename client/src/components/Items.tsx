@@ -157,7 +157,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
         <br />
         <br />
         <Loader indeterminate active inline="centered">
-          Loading Items
+          Loading
         </Loader>
       </Grid.Row>
     )

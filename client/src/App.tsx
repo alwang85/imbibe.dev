@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link, Route, Router, Switch, Redirect } from 'react-router-dom'
-import { Grid, Menu, Segment } from 'semantic-ui-react'
+import { Grid, Segment, Dimmer, Loader, Image } from 'semantic-ui-react'
 
 import { WrappedNav } from './components/Nav';
 import { NotFound } from './components/NotFound'
@@ -92,7 +92,38 @@ export default class App extends Component<AppProps, AppState> {
                   <UserContext.Provider value={this.state.userState} >
                     <WrappedNav history={this.props.history} />
                     <LayoutContext.Provider value={this.state.layoutState}>
-                      {this.generateCurrentPage()}
+                      { this.props.isAuthenticated && this.props.idToken && (
+                        <WrappedGetOrCreateUser
+                          setUser={this.setUser}
+                          isInitialAuthenticatedLoad={this.state.isInitialAuthenticatedLoad}
+                        />
+                      )}
+                      <Switch>
+                        <Route
+                          path="/"
+                          exact
+                          render={props => {
+                            // TODO update to a neighberhood friendly welcome
+                            return <NotFound />
+                          }}
+                        />
+                        <Route
+                          path="/public/:displayName"
+                          children={({ match }) => (
+                            <WrappedPublicItems 
+                              history={this.props.history}
+                              match={match}
+                            />
+                          )}
+                        />
+                        <Route path="/login" exact><WrappedLogIn /></Route>
+                        <PrivateRoute isAuthenticated={this.props.isAuthenticated} path="/dashboard">
+                          <WrappedItems setLayout={this.setLayout}/>
+                        </PrivateRoute>
+                        <PrivateRoute isAuthenticated={this.props.isAuthenticated} path="/profile">
+                          <WrappedProfile />
+                        </PrivateRoute>
+                      </Switch>
                     </LayoutContext.Provider>
                   </UserContext.Provider>
                 </Router>
@@ -102,71 +133,6 @@ export default class App extends Component<AppProps, AppState> {
         </Segment>
       </div>
     )
-  }
-
-  getPublicRoute = () => (
-    <Route
-      path="/public/:displayName"
-      children={({ match }) => (
-        <WrappedPublicItems 
-          history={this.props.history}
-          match={match}
-        />
-      )}
-    />
-  )
-
-  generateCurrentPage() {
-    const unAuthSwitch = (
-      <Switch>
-        <Route
-          path="/"
-          exact
-          render={props => {
-            // TODO update to a neighberhood friendly welcome
-            return <NotFound />
-          }}
-        />
-        { this.getPublicRoute() }
-        <Route component={NotFound} />
-      </Switch>
-    );
-
-    const authSwitch = (
-      <React.Fragment>
-        <WrappedGetOrCreateUser
-          setUser={this.setUser}
-          isInitialAuthenticatedLoad={this.state.isInitialAuthenticatedLoad}
-        />
-        <Switch>
-          <Route
-            path="/"
-            exact
-            render={props => {
-              // TODO figure out a behavior
-              return (
-                <React.Fragment>
-                  <WrappedItems {...props} setLayout={this.setLayout}/>
-                </React.Fragment>
-              )
-            }}
-          />
-          <Route path="/login" exact><WrappedLogIn /></Route>
-
-          { this.getPublicRoute() }
-          
-          <PrivateRoute isAuthenticated={this.props.isAuthenticated} path="/dashboard">
-            <WrappedItems setLayout={this.setLayout}/>
-          </PrivateRoute>
-          <PrivateRoute isAuthenticated={this.props.isAuthenticated} path="/profile">
-            <WrappedProfile />
-          </PrivateRoute>
-          <Route component={NotFound} />
-        </Switch>
-      </React.Fragment>
-    )
-    // isAuthenticated is the first call in auth0-context.tsx, idToken is the response of the second call
-    return this.props.isAuthenticated && this.props.idToken ? authSwitch : unAuthSwitch
   }
 }
 
