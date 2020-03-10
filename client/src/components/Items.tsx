@@ -132,7 +132,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
         moveSubItem: this.moveSubItem,
         deleteItem: this.deleteItem,
       }}>
-        <Header as="h1">Items</Header>
+        <Header as="h1"></Header>
         <Grid columns={3} doubling stackable>
           <Grid.Row>
             {
