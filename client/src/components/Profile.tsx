@@ -7,6 +7,10 @@ import {
   Input,
   Image
 } from 'semantic-ui-react'
+import MarkdownIt from 'markdown-it'
+import MdEditor from 'react-markdown-editor-lite'
+// import style manually
+import 'react-markdown-editor-lite/lib/index.css';
 
 import { 
   getDisplayNameAvailability,
@@ -39,6 +43,8 @@ interface ItemsState {
   isProfilePublic: boolean,
   displayName?: string | null,
   categories?: Category[],
+  profileImageUrl?: string | null,
+  description?: string | null,
   currentlyEditedCategoryName: string,
   currentlyEditedCategoryOrder: number,
   currentlyEditedCategoryPublic: boolean,
@@ -50,11 +56,14 @@ const initialItemsState = {
   isProfilePublic: false,
   displayName: null,
   categories: [],
+  profileImageUrl: null,
+  description: null,
   currentlyEditedCategoryName: '',
   currentlyEditedCategoryOrder: 100,
   currentlyEditedCategoryPublic: false,
   isDisplayNameAvailable: true,
 }
+const mdParser = new MarkdownIt();
 
 class Profile extends React.PureComponent<ItemsProps, ItemsState> {
   state: ItemsState = {
@@ -68,10 +77,10 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
 
     try {
       const {
-        isProfilePublic, displayName, categories
+        isProfilePublic, displayName, categories, profileImageUrl, description
       } = await getUser(idToken, userId)
       this.setState({
-        isProfilePublic, displayName, categories
+        isProfilePublic, displayName, categories, profileImageUrl, description
       })
     } catch (e) {
       alert(`Failed to fetch user: ${e.message}`)
@@ -109,6 +118,9 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
       await uploadFile(uploadUrl, this.state.file)
       const updatedUser = await getUser(this.props.idToken, this.props.userId);
       this.props.setUser(updatedUser, true);
+      this.setState({
+        profileImageUrl: uploadUrl,
+      })
 
       alert('File was uploaded!')
     } catch (e) {
@@ -116,6 +128,13 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
     } finally {
       this.setUploadState(UploadState.NoUpload)
     }
+  }
+
+  // @ts-ignore
+  handleEditorChange = ({html, text}) => {    
+    this.setState({
+      description: text,
+    })
   }
 
   handleDisplayNameChange = async (event: React.ChangeEvent<HTMLInputElement>, data: any) => {
@@ -243,7 +262,9 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
           userId: this.props.userId,
           isProfilePublic: this.state.isProfilePublic,
           displayName: this.state.displayName || null,
-          categories: this.state.categories
+          categories: this.state.categories,
+          profileImageUrl: this.state.profileImageUrl,
+          description: this.state.description,
         }
       )
       
@@ -285,11 +306,11 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
                 onChange={this.handleInputChange}
               />
             </Card.Content>
-              { this.props.user.profileImageUrl && (
-                <Card.Content>
-                  <Image src={this.props.user.profileImageUrl} size="small" wrapped />
-                </Card.Content>
-              )}
+            { this.props.user.profileImageUrl && (
+              <Card.Content>
+                <Image src={this.props.user.profileImageUrl} size="small" wrapped />
+              </Card.Content>
+            )}
             <Card.Content>
               <Form onSubmit={this.handleImageUpload}>
                 <Form.Field>
@@ -313,6 +334,13 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
                   </Button>
                 </div>
               </Form>
+            </Card.Content>
+            <Card.Content>
+            <MdEditor
+              value={this.state.description || ""}
+              renderHTML={(text) => mdParser.render(text)}
+              onChange={this.handleEditorChange}
+              />
             </Card.Content>
           </Card>
           <Card fluid>
@@ -414,7 +442,7 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
               </div>
             </Card.Content>
           </Card>
-          <Button onClick={this.onUserUpdate}>Submit</Button>
+          <Button onClick={this.onUserUpdate}>Save Profile</Button>
         </Form>
       </Card.Content></Card>
     )

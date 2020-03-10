@@ -33,6 +33,7 @@ export async function createUser(
       order: 100,
     }],
     profileImageUrl: null,
+    description: null,
   })
 }
 

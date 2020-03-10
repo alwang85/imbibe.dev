@@ -6,4 +6,5 @@ export interface UpdateUserRequest {
   displayName?: string,
   categories?: Category[],
   profileImageUrl?: string | null,
+  description?: string | null,
 }

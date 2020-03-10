@@ -5,5 +5,6 @@ export interface User {
   isProfilePublic: boolean,
   displayName: string
   categories: Category[],
-  profileImageUrl: string | null
+  profileImageUrl?: string | null,
+  description?: string | null,
 }

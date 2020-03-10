@@ -14,6 +14,12 @@
     },
     "categories": {
       "type": "array"
+    },
+    "description": {
+      "type": ["string", "null"]
+    },
+    "profileImageUrl": {
+      "type": ["string", "null"]
     }
   },
   "required": [
