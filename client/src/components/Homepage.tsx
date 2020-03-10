@@ -31,7 +31,7 @@ const Homepage = () => {
           </Grid.Row>
           <Grid.Row centered>
             <br />
-            <Header as="h2">Imbibe allows you to track what you are interested in and are working on:</Header>>
+            <Header as="h2">Imbibe allows you to track what you are interested in and are working on:</Header>
             <Image centered bordered src="https://imbibe-images-dev.s3.amazonaws.com/imbibe-demo.png" size="huge" />
           </Grid.Row>
 
