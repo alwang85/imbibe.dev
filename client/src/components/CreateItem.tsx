@@ -142,7 +142,7 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
       console.log('new item creation success', newItem)
 
       this.setState({
-        showForm: false,
+        ...initialItemsState,
       });
       
     } catch {

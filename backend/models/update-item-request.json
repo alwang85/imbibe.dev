@@ -7,7 +7,7 @@
       "type": "string"
     },
     "description": {
-      "type": "string"
+      "type": ["string", "null"]
     },
     "category": {
       "type": "string"
