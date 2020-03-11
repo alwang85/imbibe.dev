@@ -1,10 +1,12 @@
 import * as AWS  from 'aws-sdk'
 import * as AWSXRay from 'aws-xray-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
+import { User } from '../models/User'
+import { createLogger } from '../utils/logger'
+
+const logger = createLogger('userAccess')
 
 const XAWS = AWSXRay.captureAWS(AWS)
-
-import { User } from '../models/User'
 
 export class UserAccess {
 
@@ -15,7 +17,7 @@ export class UserAccess {
   }
 
   async getUser(userId: String): Promise<User> {
-    console.log('incoming userId in getUser', userId)
+    logger.info('incoming userId in getUser', userId)
     const result = await this.docClient.query({
       TableName: this.usersTable,
       KeyConditionExpression: 'userId = :userId',
@@ -25,15 +27,15 @@ export class UserAccess {
       ScanIndexForward: false
     }).promise()
 
-    console.log('obtained user', result)
+    logger.info('obtained user', result)
 
     const item = result.Items
-    console.log('returning user item', item[0]);
+    logger.info('returning user item', item[0]);
     return item[0] as User
   }
 
   async getUserByDisplayName(displayName: String): Promise<User> {
-    console.log('incoming displayName in getUserByDisplayName', displayName)
+    logger.info('incoming displayName in getUserByDisplayName', displayName)
     const result = await this.docClient.query({
       TableName: this.usersTable,
       IndexName: this.usersDisplayNameIndex,
@@ -44,15 +46,15 @@ export class UserAccess {
       ScanIndexForward: false
     }).promise()
 
-    console.log('obtained user', result)
+    logger.info('obtained user', result)
 
     const item = result.Items
-    console.log('returning user item', item[0]);
+    logger.info('returning user item', item[0]);
     return item[0] as User
   }
 
   async createUser(userObj: User): Promise<User> {
-    console.info('createUser in dataLayer', userObj);
+    logger.info('createUser in dataLayer', userObj);
     await this.docClient.put({
       TableName: this.usersTable,
       Item: userObj
@@ -66,7 +68,7 @@ export class UserAccess {
     currentUserId: String,
   ): Promise<User> {
 
-    console.info('incoming userObject in updateUser', userObject);
+    logger.info('incoming userObject in updateUser', userObject);
     await this.docClient.update({
       TableName: this.usersTable,
       Key: {
@@ -90,7 +92,7 @@ export class UserAccess {
 
 function createDynamoDBClient() {
   if (process.env.IS_OFFLINE) {
-    console.log('Creating a local DynamoDB instance')
+    logger.info('Creating a local DynamoDB instance')
     return new XAWS.DynamoDB.DocumentClient({
       region: 'localhost',
       endpoint: 'http://localhost:8000'
