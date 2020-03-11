@@ -114,7 +114,9 @@ export default class App extends Component<AppProps, AppState> {
                             />
                           )}
                         />
-                        <Route path="/login" exact><WrappedLogIn /></Route>
+                        <Route path="/login" exact
+                          render={({ location }) => <WrappedLogIn location={location}/>}
+                        />
                         <PrivateRoute isAuthenticated={this.props.isAuthenticated} path="/dashboard">
                           <WrappedItems setLayout={this.setLayout}/>
                         </PrivateRoute>

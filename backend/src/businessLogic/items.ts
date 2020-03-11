@@ -70,7 +70,7 @@ export async function updateItem(
     newSubItems = item.subItems.map(subItem => ({
       ...subItem,
       url: subItem.url || null,
-      anchorText: item.anchorText || null,
+      anchorText: subItem.anchorText || null,
     }))
   }
 
