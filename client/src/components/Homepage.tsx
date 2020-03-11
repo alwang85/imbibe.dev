@@ -50,6 +50,11 @@ const Homepage = () => {
             <br />
             <br />
             <Header as="h2">Absorb and Assimiliate!</Header>
+            <Header as="h3">Steps to start:</Header>
+            <Header as="h4">1. Click Login/Register in the Nav</Header>
+            <Header as="h4">2. Click Profile in the Nav</Header>
+            <Header as="h4">3. Create additional categories, save each category, and save the profile</Header>
+            <Header as="h4">4. Go to the dashboard and start creating items!</Header>
           </Grid.Row>
         </Grid.Column>
       </Grid>

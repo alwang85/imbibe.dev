@@ -67,3 +67,11 @@ Credentials for running your frontend against this project:
     }
 
 JSON webkey url - https://dev-x19x8zbj.auth0.com/.well-known/jwks.json
+
+
+## Application usage steps
+
+1. Click Login/Register in the Nav
+2. Click Profile in the Nav
+3. Create additional categories, save each category, and save the profile
+4. Go to the dashboard and start creating items!
