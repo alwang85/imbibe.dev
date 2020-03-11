@@ -3,6 +3,9 @@ import * as uuid from 'uuid'
 import { Item } from '../models/Item'
 import { ItemAccess } from '../dataLayer/itemAccess'
 import { CreateItemRequest } from '../requests/CreateItemRequest'
+import { createLogger } from '../utils/logger'
+
+const logger = createLogger('itemsLogic')
 
 const itemAccess = new ItemAccess()
 
@@ -32,9 +35,8 @@ export async function createItem(
 
   const id = uuid.v4()
 
-  // server side authentication temp disable
-  // if(!currentUserId) throw new Error('not authenticated')
-  console.log('incoming createItemRequest', createItemRequest);
+  if(!currentUserId) throw new Error('not authenticated')
+  logger.info('incoming createItemRequest', createItemRequest);
 
   let newSubItems;
   if (createItemRequest.subItems) {

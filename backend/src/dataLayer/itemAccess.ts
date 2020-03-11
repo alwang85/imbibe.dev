@@ -1,10 +1,12 @@
 import * as AWS  from 'aws-sdk'
 import * as AWSXRay from 'aws-xray-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
+import { Item } from '../models/Item'
+import { createLogger } from '../utils/logger'
+
+const logger = createLogger('itemAccess')
 
 const XAWS = AWSXRay.captureAWS(AWS)
-
-import { Item } from '../models/Item'
 
 export class ItemAccess {
 
@@ -16,7 +18,7 @@ export class ItemAccess {
   }
 
   async getAllItems(userId: String): Promise<Item[]> {
-    console.log('Getting all groups')
+    logger.info('Getting all groups')
 
     const result = await this.docClient.query({
       TableName: this.itemsTable,
@@ -51,7 +53,7 @@ export class ItemAccess {
     item: Item,
     currentUserId: String,
   ): Promise<Item> {
-    console.log('deleting item', item)
+    logger.info('deleting item', item)
     const deleteditem = await this.docClient.delete({
       TableName: this.itemsTable,
         Key: {
@@ -64,7 +66,7 @@ export class ItemAccess {
         }
     }).promise();
 
-    console.log('deleted item', deleteditem)
+    logger.info('deleted item', deleteditem)
     return item;
   }
 
@@ -113,7 +115,7 @@ export class ItemAccess {
 
 function createDynamoDBClient() {
   if (process.env.IS_OFFLINE) {
-    console.log('Creating a local DynamoDB instance')
+    logger.info('Creating a local DynamoDB instance')
     return new XAWS.DynamoDB.DocumentClient({
       region: 'localhost',
       endpoint: 'http://localhost:8000'

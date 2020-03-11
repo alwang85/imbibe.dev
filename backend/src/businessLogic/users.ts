@@ -1,6 +1,9 @@
 import { User } from '../models/User'
 import { UserAccess } from '../dataLayer/userAccess'
 import { CreateUserRequest } from '../requests/CreateUserRequest'
+import { createLogger } from '../utils/logger'
+
+const logger = createLogger('usersLogic')
 
 const userAccess = new UserAccess()
 
@@ -21,7 +24,7 @@ export async function createUser(
 ): Promise<User> {
 
   // if(!currentUserId) throw new Error('not authenticated')
-  console.log('incoming createUserRequest', createUserRequest);
+  logger.info('incoming createUserRequest', createUserRequest);
 
   return await userAccess.createUser({
     userId: createUserRequest.userId,
