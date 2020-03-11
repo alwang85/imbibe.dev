@@ -22,6 +22,7 @@ alwang85's Serverless project implementaiton for udacity's cloud developer cours
 * [private and public routes](https://github.com/alwang85/imbibe.dev/blob/master/client/src/App.tsx#L96-L123)
 * state/layout updates after item crud
 * added markdown editing for public profile
+* allows moving subItems between different Items
 * profile form checks with the backend for unique displayName
 
 
