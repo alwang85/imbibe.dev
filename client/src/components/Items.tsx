@@ -131,6 +131,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
         items: this.state.items,
         moveSubItem: this.moveSubItem,
         deleteItem: this.deleteItem,
+        fetchLayoutAndItems: this.fetchLayoutAndItems,
       }}>
         <Header as="h1"></Header>
         <Grid columns={3} doubling stackable>

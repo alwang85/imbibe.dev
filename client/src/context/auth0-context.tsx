@@ -94,7 +94,10 @@ export class Auth0Provider extends Component<{}, IState> {
           ...p,
           returnTo: this.config.callbackUrl,
         }),
-        logout: (...p: any) => auth0Client.logout(...p)
+        logout: (...p: any) => auth0Client.logout({
+          ...p,
+          returnTo: this.config.callbackUrl,
+        })
     };
     return <Auth0Context.Provider value={configObject}>{children}</Auth0Context.Provider>;
   }

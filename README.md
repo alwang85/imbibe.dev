@@ -22,6 +22,7 @@ alwang85's Serverless project implementaiton for udacity's cloud developer cours
 * [private and public routes](https://github.com/alwang85/imbibe.dev/blob/master/client/src/App.tsx#L96-L123)
 * state/layout updates after item crud
 * added markdown editing for public profile
+* allows moving subItems between different Items
 * profile form checks with the backend for unique displayName
 
 
@@ -30,6 +31,7 @@ alwang85's Serverless project implementaiton for udacity's cloud developer cours
 * Cloudfront pointing to S3 bucket for custom domain name
 * public accessable vs. authorization required for both frontend and backend routes/functions
 * Generally clean and focused commits and pull requests based on intented functionality [link to PRs](https://github.com/alwang85/imbibe.dev/pulls?q=is%3Apr+is%3Aclosed)
+* Personal PR habit- usually if time allows I wait a day on my own PRs, and review them myself the next day before raising a PR. While I couldn't do that for this project, I spent one more day using my application to find/fix defects before submitting this as a project to Udacity.
 * For new users on first Auth0 login, the app creates a User object on initial load [link to code](https://github.com/alwang85/imbibe.dev/blob/master/client/src/App.tsx#L97-L99)
 
 
@@ -67,3 +69,11 @@ Credentials for running your frontend against this project:
     }
 
 JSON webkey url - https://dev-x19x8zbj.auth0.com/.well-known/jwks.json
+
+
+## Application usage steps
+
+1. Click Login/Register in the Nav
+2. Click Profile in the Nav
+3. Create additional categories, save each category, and save the profile
+4. Go to the dashboard and start creating items!

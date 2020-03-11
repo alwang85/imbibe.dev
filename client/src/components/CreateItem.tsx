@@ -12,6 +12,7 @@ import TextareaAutosize from "react-textarea-autosize";
 
 import { createItem } from '../api/items-api'
 import { getLayoutByUserId } from '../api/layout-api'
+import { ItemsWrapper } from '../context/itemsContext';
 import { UserWrapper } from '../context/userContext'
 import { LayoutWrapper } from '../context/layoutContext'
 import { AuthWrapper } from '../context/auth0-context';
@@ -29,6 +30,8 @@ interface ItemsProps {
   user: User
   setLayout: (layout: layoutItem[]) => void
   categoryName: string
+  // below comes from ItemsWrapper HoC
+  fetchLayoutAndItems: () => {}, // updates the layout and items list
   // below comes from AuthWrapper HoC
   idToken: string,
   userId: string,
@@ -131,18 +134,13 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
         subItems: this.state.newItemSubItems,
       });
 
-      const updatedLayout = await getLayoutByUserId(
-        this.props.idToken,
-        this.props.userId
-      );
-
-      this.props.setLayout(updatedLayout)
+      await this.props.fetchLayoutAndItems();
       
       // tell parent to add item if successful
       console.log('new item creation success', newItem)
 
       this.setState({
-        showForm: false,
+        ...initialItemsState,
       });
       
     } catch {
@@ -284,4 +282,4 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
   }
 }
 
-export const WrappedCreateItem = AuthWrapper(LayoutWrapper(UserWrapper(CreateItem)));
+export const WrappedCreateItem = ItemsWrapper(AuthWrapper(LayoutWrapper(UserWrapper(CreateItem))));

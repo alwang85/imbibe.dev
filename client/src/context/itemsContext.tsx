@@ -5,7 +5,8 @@ import { SubItem } from '../types/SubItem';
 const ItemsContext = React.createContext({
   items: [] as Item[],
   moveSubItem: (movedSubItem: SubItem, originalItem: Item, targetItem: Item) => {},
-  deleteItem: (itemId: string) => {}
+  deleteItem: (itemId: string) => {},
+  fetchLayoutAndItems: () => {},
 });
 
 export default ItemsContext;

@@ -83,7 +83,7 @@ export default class Nav extends Component<NavProps, NavState> {
     } else {
       return (
         <Menu.Item name="login" onClick={this.props.loginWithRedirect}>
-          Log In
+          Log In / Register
         </Menu.Item>
       )
     }
