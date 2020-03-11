@@ -93,7 +93,7 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
           {subItem.description}
           {
             subItem.anchorText && subItem.url && (
-              <span>- <a href={subItem.url} target="_blank">{subItem.anchorText}</a></span>
+              <span>{`${subItem.description ? ' - ' : ''}`}<a href={subItem.url} target="_blank">{subItem.anchorText}</a></span>
             )
           }
         </React.Fragment>
@@ -124,7 +124,7 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
           <Card.Description>
             {description}
             { item.anchorText && item.url && (
-              <span>- <a className="ui" href={item.url} target="_blank">{item.anchorText}</a></span>
+              <span>{`${description ? ' - ' : ''}`}<a className="ui" href={item.url} target="_blank">{item.anchorText}</a></span>
             )}
           </Card.Description>
         </Card.Content>
