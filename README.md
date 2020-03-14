@@ -33,6 +33,7 @@ alwang85's Serverless project implementaiton for udacity's cloud developer cours
 * Generally clean and focused commits and pull requests based on intented functionality [link to PRs](https://github.com/alwang85/imbibe.dev/pulls?q=is%3Apr+is%3Aclosed)
 * Personal PR habit- usually if time allows I wait a day on my own PRs, and review them myself the next day before raising a PR. While I couldn't do that for this project, I spent one more day using my application to find/fix defects before submitting this as a project to Udacity.
 * For new users on first Auth0 login, the app creates a User object on initial load [link to code](https://github.com/alwang85/imbibe.dev/blob/master/client/src/App.tsx#L97-L99)
+* added package: individually true*
 
 
 ## Deployment Instructions:
@@ -42,6 +43,7 @@ To deploy an application backend, first update `IMAGES_S3-BUCKET` and `THUMBNAIL
 ```
 cd backend
 npm install
+export NODE_OPTIONS=--max_old_space_size=6144
 sls deploy -v
 ```
 
