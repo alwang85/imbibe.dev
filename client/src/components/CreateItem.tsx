@@ -105,7 +105,8 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
       id: uuid.v4(),
       title: this.state.newSubItemTitle,
       description: this.state.newSubItemDescription,
-      url: this.state.newSubItemUrl
+      url: this.state.newSubItemUrl,
+      anchorText: this.state.newSubItemAnchorText,
     } as SubItem;
 
     this.setState({
@@ -117,6 +118,7 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
       newSubItemDescription: '',
       newSubItemUrl: '',
       newItemAnchorText: '',
+      newSubItemAnchorText: '',
     });
   }
 
@@ -224,13 +226,14 @@ export class CreateItem extends React.PureComponent<ItemsProps, ItemsState> {
             <Card.Content>
               {
                 this.state.newItemSubItems.map(subItem => (
-                  // <Card key={subItem.id}>
+                  <React.Fragment>
+                    <br />
                     <Card.Content key={subItem.id}>
                       <Card.Header>{subItem.title}</Card.Header>
                       <Card.Description>{subItem.description}</Card.Description>
                       {subItem.url && <Card.Content><a href={subItem.url} target="_blank">{subItem.anchorText || "no anchor text"}</a></Card.Content>}
                     </Card.Content>
-                  // </Card>
+                  </React.Fragment>
                 ))
               }
             </Card.Content>

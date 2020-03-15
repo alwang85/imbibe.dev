@@ -4,7 +4,7 @@ import {
   Card,
   Icon,
 } from 'semantic-ui-react'
-import { Accordion } from '@fluentui/react';
+import { Accordion, Dialog } from '@fluentui/react';
 
 import { ItemsWrapper } from '../context/itemsContext';
 import { UserWrapper } from '../context/userContext'
@@ -32,13 +32,20 @@ interface ViewItemState {
   view: string,
   subItemsTabOpen: boolean,
   expandedSubItem: string,
-  activeIndexs: number[]
+  activeIndexs: number[],
+  deleteConfirmationOpen: boolean,
 }
 const initialViewItemState = {
   view: 'viewItem',
   subItemsTabOpen: false,
   expandedSubItem: '',
-  activeIndexs: [0]
+  activeIndexs: [0],
+  deleteConfirmationOpen: false,
+}
+
+const ConfirmDelete = () => {
+
+  
 }
 
 export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> {
@@ -60,6 +67,39 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
 
     this.setState({ activeIndexs: newIndex });
   };
+
+  confirmDelete = async (id: string) => {
+    await this.props.deleteItem(id);
+    this.setState({
+      deleteConfirmationOpen: false,
+    });
+  }
+
+  cancelDelete = () => {
+    this.setState({
+      deleteConfirmationOpen: false,
+    });
+  }
+
+  openDeleteConfirmation = () => {
+    this.setState({
+      deleteConfirmationOpen: true,
+    });
+  }
+
+  renderDeleteConfirmation = (id: string) => {
+
+    return (
+      <Dialog 
+        open={this.state.deleteConfirmationOpen}
+        cancelButton="Cancel"
+        confirmButton="Confirm"
+        header="Confirm Delete?"
+        onCancel={this.cancelDelete}
+        onConfirm={() => this.confirmDelete(id)}
+      />
+    )
+  }
 
   render() {
     return (
@@ -135,12 +175,15 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
               </Button>
               <Button 
                 icon
-                onClick={() => this.props.deleteItem(id)}
+                onClick={this.openDeleteConfirmation}
                 aria-label="Delete This Item"
               >
                 <Icon name='trash' />
               </Button>
             </Card.Content>
+        }
+        {
+          this.renderDeleteConfirmation(id)
         }
       </Card>
     )
