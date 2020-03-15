@@ -35,7 +35,7 @@ export default class Nav extends Component<NavProps, NavState> {
 
   generateMenu() {
     const { isAuthenticated, user: { isProfilePublic = false, displayName= ''} = {} } = this.props;
-
+    
     return (
       <Menu>
         <Menu.Item name="home">
@@ -44,12 +44,9 @@ export default class Nav extends Component<NavProps, NavState> {
 
         { 
           isAuthenticated && (
-            <React.Fragment>
-              <Menu.Item name="dashboard">
-                <Link to="/dashboard">Dashboard</Link>
-              </Menu.Item>
-
-            </React.Fragment>
+            <Menu.Item name="dashboard">
+              <Link to="/dashboard">Dashboard</Link>
+            </Menu.Item>
           )
         }
         <Menu.Menu position="right">
@@ -76,13 +73,13 @@ export default class Nav extends Component<NavProps, NavState> {
   logInLogOutButton() {
     if (this.props.userInfo) {
       return (
-        <Menu.Item name="logout" onClick={this.props.logout}>
+        <Menu.Item name="logout" tabindex="0" onClick={this.props.logout}>
           Log Out
         </Menu.Item>
       )
     } else {
       return (
-        <Menu.Item name="login" onClick={this.props.loginWithRedirect}>
+        <Menu.Item name="login" tabindex="0" onClick={this.props.loginWithRedirect}>
           Log In / Register
         </Menu.Item>
       )

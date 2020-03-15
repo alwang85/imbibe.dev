@@ -1,15 +1,16 @@
 import * as React from 'react'
 import {
-  Accordion,
   Button,
   Card,
   Icon,
 } from 'semantic-ui-react'
+import { Accordion } from '@fluentui/react';
 
 import { ItemsWrapper } from '../context/itemsContext';
 import { UserWrapper } from '../context/userContext'
 import { AuthWrapper } from '../context/auth0-context';
 import { Item } from '../types/Item'
+import '../styles.css';
 
 interface ToggleItemFunc {
   (): void;
@@ -43,15 +44,6 @@ const initialViewItemState = {
 export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> {
   state: ViewItemState = {
     ...initialViewItemState
-  }
-
-  toggleSubItemsTab = () => {
-    console.log('toggle sub items called', this.state.subItemsTabOpen)
-    this.setState({ subItemsTabOpen: !this.state.subItemsTabOpen })
-  }
-
-  toggleSubItem = (subItemId: string) => {
-    this.setState({ expandedSubItem: subItemId })
   }
 
   toggleAccordion = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, titleProps: any) => {
@@ -105,16 +97,18 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
     
     const Level1Content = (
       <div>
-        <Accordion.Accordion panels={subItemPanels} />
+        <Accordion exclusive panels={subItemPanels} />
       </div>
     )
     
     const rootPanels = [
-      { key: 'panel-1', title: 'Subitems', content: { content: Level1Content } },
+      { key: 'panel-1', title: 'Subitems', content: Level1Content },
     ]
     
     const NestedSubitems = () => (
-      <Accordion fluid panels={rootPanels} styled />
+      <div>
+        <Accordion panels={rootPanels} />
+      </div>
     )
 
     return (

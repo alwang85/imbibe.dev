@@ -1,0 +1,21 @@
+.ui-accordion__title__content-wrapper {
+  padding-left: 0.5em;
+}
+
+.ui-accordion {
+  padding: .5em;
+}
+.ui-accordion__title {
+  padding: 1em 1em 0.5em;
+
+}
+
+.ui-accordion__content {
+  padding: 1em 0.5em !important;
+  border-radius: .28571429rem;
+  box-shadow: 0 1px 2px 0 rgba(34,36,38,.15), 0 0 0 1px rgba(34,36,38,.15);
+}
+
+.ui-accordion__content > div > .ui-accordion > .ui-accordion__content {
+  padding: 1em !important;
+}
