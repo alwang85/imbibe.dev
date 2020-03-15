@@ -369,8 +369,8 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
                             {subItem.url && <Card.Content><a href={subItem.url} target="_blank">{subItem.anchorText || "no anchor text"}</a></Card.Content>}
                           </Card.Content>
                           <Card.Content>
-                            <Button icon onClick={()=> this.setCurrentlyEditedSubItem(subItem.id)}>Edit</Button>
-                            <Button icon onClick={()=> this.deleteSubItemFromState(subItem.id)}><Icon name='trash' /></Button>
+                            <Button icon aria-label="Edit Subitem" onClick={()=> this.setCurrentlyEditedSubItem(subItem.id)}>Edit</Button>
+                            <Button icon aria-label="Delete Subitem" onClick={()=> this.deleteSubItemFromState(subItem.id)}><Icon name='trash' /></Button>
                             <WrappedMoveItem item={this.props.item} subItem={subItem} hasUnsavedChanges={this.state.hasUnsavedChanges }/>
                           </Card.Content>
                         </Card>

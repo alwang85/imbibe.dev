@@ -14,6 +14,7 @@ import LayoutContext from './context/layoutContext'
 import { User, emptyUser } from './types/User';
 import { Item } from './types/Item'
 import { WrappedGetOrCreateUser } from './components/GetOrCreateUser';
+import './App.css';
 
 export interface AppProps {}
 
@@ -93,37 +94,39 @@ export default class App extends Component<AppProps, AppState> {
                   <UserContext.Provider value={this.state.userState} >
                     <WrappedNav history={this.props.history} />
                     <LayoutContext.Provider value={this.state.layoutState}>
-                      { this.props.isAuthenticated && this.props.idToken && (
-                        <WrappedGetOrCreateUser
-                          setUser={this.setUser}
-                          isInitialAuthenticatedLoad={this.state.isInitialAuthenticatedLoad}
-                        />
-                      )}
-                      <Switch>
-                        <Route
-                          path="/"
-                          exact
-                          component={Homepage}
-                        />
-                        <Route
-                          path="/public/:displayName"
-                          children={({ match }) => (
-                            <WrappedPublicItems 
-                              history={this.props.history}
-                              match={match}
-                            />
-                          )}
-                        />
-                        <Route path="/login" exact
-                          render={({ location }) => <WrappedLogIn location={location}/>}
-                        />
-                        <PrivateRoute isAuthenticated={this.props.isAuthenticated} path="/dashboard">
-                          <WrappedItems setLayout={this.setLayout}/>
-                        </PrivateRoute>
-                        <PrivateRoute isAuthenticated={this.props.isAuthenticated} path="/profile">
-                          <WrappedProfile />
-                        </PrivateRoute>
-                      </Switch>
+                      <main>
+                        { this.props.isAuthenticated && this.props.idToken && (
+                          <WrappedGetOrCreateUser
+                            setUser={this.setUser}
+                            isInitialAuthenticatedLoad={this.state.isInitialAuthenticatedLoad}
+                          />
+                        )}
+                        <Switch>
+                          <Route
+                            path="/"
+                            exact
+                            component={Homepage}
+                          />
+                          <Route
+                            path="/public/:displayName"
+                            children={({ match }) => (
+                              <WrappedPublicItems 
+                                history={this.props.history}
+                                match={match}
+                              />
+                            )}
+                          />
+                          <Route path="/login" exact
+                            render={({ location }) => <WrappedLogIn location={location}/>}
+                          />
+                          <PrivateRoute isAuthenticated={this.props.isAuthenticated} path="/dashboard">
+                            <WrappedItems setLayout={this.setLayout}/>
+                          </PrivateRoute>
+                          <PrivateRoute isAuthenticated={this.props.isAuthenticated} path="/profile">
+                            <WrappedProfile />
+                          </PrivateRoute>
+                        </Switch>
+                      </main>
                     </LayoutContext.Provider>
                   </UserContext.Provider>
                 </Router>

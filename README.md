@@ -24,6 +24,7 @@ alwang85's Serverless project implementaiton for udacity's cloud developer cours
 * added markdown editing for public profile
 * allows moving subItems between different Items
 * profile form checks with the backend for unique displayName
+* accessibility check /w Chrome accessibility audit + using voice over + using the axe chrome extension
 
 
 ## General

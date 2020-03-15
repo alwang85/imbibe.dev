@@ -1,3 +1,7 @@
+a {
+  color: #2646c6; /* for min contrast ratio */
+}
+
 .App {
   text-align: center;
 }

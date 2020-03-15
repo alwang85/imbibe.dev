@@ -85,7 +85,7 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
           {subItem.description}
           {
             subItem.anchorText && subItem.url && (
-              <span>{`${subItem.description ? ' - ' : ''}`}<a href={subItem.url} target="_blank">{subItem.anchorText}</a></span>
+              <span>{`${subItem.description ? ' - ' : ''}`}<a href={subItem.url} target="_blank" rel="noopener">{subItem.anchorText}</a></span>
             )
           }
         </React.Fragment>
@@ -102,7 +102,7 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
     )
     
     const rootPanels = [
-      { key: 'panel-1', title: 'Subitems', content: Level1Content },
+      { key: id, title: 'Subitems', content: Level1Content },
     ]
     
     const NestedSubitems = () => (
@@ -118,7 +118,7 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
           <Card.Description>
             {description}
             { item.anchorText && item.url && (
-              <span>{`${description ? ' - ' : ''}`}<a className="ui" href={item.url} target="_blank">{item.anchorText}</a></span>
+              <span>{`${description ? ' - ' : ''}`}<a className="ui" href={item.url} target="_blank" rel="noopener">{item.anchorText}</a></span>
             )}
           </Card.Description>
         </Card.Content>
@@ -129,12 +129,14 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
               <Button 
                 icon
                 onClick={this.props.toggleEditItem}
+                aria-label="Edit This Item"
               >
                 <Icon name='pencil' />
               </Button>
               <Button 
                 icon
                 onClick={() => this.props.deleteItem(id)}
+                aria-label="Delete This Item"
               >
                 <Icon name='trash' />
               </Button>

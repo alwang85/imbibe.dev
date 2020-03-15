@@ -17,5 +17,6 @@
 }
 
 .ui-accordion__content > div > .ui-accordion > .ui-accordion__content {
+  /* no native way to style nested accordions from this library */
   padding: 1em !important;
 }

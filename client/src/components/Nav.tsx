@@ -37,49 +37,51 @@ export default class Nav extends Component<NavProps, NavState> {
     const { isAuthenticated, user: { isProfilePublic = false, displayName= ''} = {} } = this.props;
     
     return (
-      <Menu>
-        <Menu.Item name="home">
-          <Link to="/">Home</Link>
-        </Menu.Item>
+      <nav>
+        <Menu>
+          <Menu.Item name="home">
+            <Link to="/">Home</Link>
+          </Menu.Item>
 
-        { 
-          isAuthenticated && (
-            <Menu.Item name="dashboard">
-              <Link to="/dashboard">Dashboard</Link>
-            </Menu.Item>
-          )
-        }
-        <Menu.Menu position="right">
-          {
-            isAuthenticated && isProfilePublic && (
-              <Menu.Item name="publicProfile">
-                <Link to={`/public/${displayName}`}>Your Public Profile</Link>
-              </Menu.Item>
-            )
-          }
-          {
+          { 
             isAuthenticated && (
-              <Menu.Item name="profile">
-                <Link to="/profile">Profile</Link>
+              <Menu.Item name="dashboard">
+                <Link to="/dashboard">Dashboard</Link>
               </Menu.Item>
             )
           }
-          {this.logInLogOutButton()}
-        </Menu.Menu>
-      </Menu>
+          <Menu.Menu position="right">
+            {
+              isAuthenticated && isProfilePublic && (
+                <Menu.Item name="publicProfile">
+                  <Link to={`/public/${displayName}`}>Your Public Profile</Link>
+                </Menu.Item>
+              )
+            }
+            {
+              isAuthenticated && (
+                <Menu.Item name="profile">
+                  <Link to="/profile">Profile</Link>
+                </Menu.Item>
+              )
+            }
+            {this.logInLogOutButton()}
+          </Menu.Menu>
+        </Menu>
+      </nav>
     )
   }
 
   logInLogOutButton() {
     if (this.props.userInfo) {
       return (
-        <Menu.Item name="logout" tabindex="0" onClick={this.props.logout}>
+        <Menu.Item name="logout" tabIndex="0" onClick={this.props.logout}>
           Log Out
         </Menu.Item>
       )
     } else {
       return (
-        <Menu.Item name="login" tabindex="0" onClick={this.props.loginWithRedirect}>
+        <Menu.Item name="login" tabIndex="0" onClick={this.props.loginWithRedirect}>
           Log In / Register
         </Menu.Item>
       )
