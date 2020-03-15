@@ -269,6 +269,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
         <Card.Content>
           <Form>
             <Form.Field 
+              id={`${this.props.item.id}-currently-edited-title`}
               control={Input}
               name='newItemTitle'
               label='title'
@@ -277,6 +278,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
               onChange={this.handleInputChange}
             />
             <Form.Field 
+              id={`${this.props.item.id}-currently-edited-description`}
               control={TextareaAutosize}
               name='newItemDescription'
               label='description'
@@ -285,6 +287,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
               onChange={this.handleTextBoxChange}
             />
             <Form.Field
+              id={`${this.props.item.id}-currently-edited-category`}
               control={Dropdown}
               placeholder='Select Category'
               name='newItemCategory'
@@ -294,6 +297,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
               onChange={this.handleInputChange}
             />
             <Form.Field 
+              id={`${this.props.item.id}-currently-edited-url`}
               control={Input}
               name='newItemUrl'
               label='url'
@@ -302,6 +306,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
               onChange={this.handleInputChange}
             />
             <Form.Field 
+              id={`${this.props.item.id}-currently-edited-anchor-text`}
               control={Input}
               name='newItemAnchorText'
               label='anchorText'
@@ -324,6 +329,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
                       (
                         <Card><Card.Content>
                           <Form.Field 
+                            id={`${subItem.id}-currently-edited-sub-item-title`}
                             control={Input}
                             name='currentlyEditedSubItemTitle'
                             label='currentlyEditedSubItemTitle'
@@ -332,6 +338,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
                             onChange={this.handleInputChange}
                           />
                           <Form.Field 
+                            id={`${subItem.id}-currently-edited-sub-item-description`}
                             control={TextareaAutosize}
                             name='currentlyEditedSubItemDescription'
                             label='currentlyEditedSubItemDescription'
@@ -340,6 +347,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
                             onChange={this.handleTextBoxChange}
                           />
                           <Form.Field 
+                            id={`${subItem.id}-currently-edited-sub-item-url`}
                             control={Input}
                             name='currentlyEditedSubItemUrl'
                             label='currentlyEditedSubItemUrl'
@@ -348,6 +356,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
                             onChange={this.handleInputChange}
                           />
                           <Form.Field 
+                            id={`${subItem.id}-currently-edited-sub-item-anchor-text`}
                             control={Input}
                             name='currentlyEditedSubItemAnchorText'
                             label='currentlyEditedSubItemAnchorText'
@@ -369,8 +378,8 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
                             {subItem.url && <Card.Content><a href={subItem.url} target="_blank">{subItem.anchorText || "no anchor text"}</a></Card.Content>}
                           </Card.Content>
                           <Card.Content>
-                            <Button icon onClick={()=> this.setCurrentlyEditedSubItem(subItem.id)}>Edit</Button>
-                            <Button icon onClick={()=> this.deleteSubItemFromState(subItem.id)}><Icon name='trash' /></Button>
+                            <Button icon aria-label="Edit Subitem" onClick={()=> this.setCurrentlyEditedSubItem(subItem.id)}>Edit</Button>
+                            <Button icon aria-label="Delete Subitem" onClick={()=> this.deleteSubItemFromState(subItem.id)}><Icon name='trash' /></Button>
                             <WrappedMoveItem item={this.props.item} subItem={subItem} hasUnsavedChanges={this.state.hasUnsavedChanges }/>
                           </Card.Content>
                         </Card>
@@ -385,6 +394,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
                   <Card.Header>Add Subitem</Card.Header>
                   <Card.Content>
                     <Form.Field 
+                      id="new-sub-item-anchor-text"
                       control={Input}
                       name='newSubItemTitle'
                       label='newSubItemTitle'
@@ -393,6 +403,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
                       onChange={this.handleInputChange}
                     />
                     <Form.Field 
+                      id="new-sub-item-description"
                       control={TextareaAutosize}
                       name='newSubItemDescription'
                       label='newSubItemDescription'
@@ -401,6 +412,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
                       onChange={this.handleTextBoxChange}
                     />
                     <Form.Field 
+                      id="new-sub-item-url"
                       control={Input}
                       name='newSubItemUrl'
                       label='newSubItemUrl'
@@ -409,6 +421,7 @@ export class EditItem extends React.PureComponent<ItemsProps, ItemsState> {
                       onChange={this.handleInputChange}
                     />
                     <Form.Field 
+                      id="new-sub-item-anchor-text"
                       control={Input}
                       name='newSubItemAnchorText'
                       label='newSubItemAnchorText'

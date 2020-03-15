@@ -82,7 +82,7 @@ export class PublicItems extends React.PureComponent<PublicItemsProps, PublicIte
     const publicProfile = (
       description && <Card fluid>
         <Card.Content textAlign="center">
-          { profileImageUrl && <Image src={profileImageUrl} wrapped ui={false} size="tiny" centered /> }
+          { profileImageUrl && <Image src={profileImageUrl} wrapped ui={false} size="tiny" centered alt="profile image"/> }
         </Card.Content>
         <Card.Content>
           <Card.Description>

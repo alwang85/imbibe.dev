@@ -1,15 +1,16 @@
 import * as React from 'react'
 import {
-  Accordion,
   Button,
   Card,
   Icon,
 } from 'semantic-ui-react'
+import { Accordion } from '@fluentui/react';
 
 import { ItemsWrapper } from '../context/itemsContext';
 import { UserWrapper } from '../context/userContext'
 import { AuthWrapper } from '../context/auth0-context';
 import { Item } from '../types/Item'
+import '../styles.css';
 
 interface ToggleItemFunc {
   (): void;
@@ -43,15 +44,6 @@ const initialViewItemState = {
 export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> {
   state: ViewItemState = {
     ...initialViewItemState
-  }
-
-  toggleSubItemsTab = () => {
-    console.log('toggle sub items called', this.state.subItemsTabOpen)
-    this.setState({ subItemsTabOpen: !this.state.subItemsTabOpen })
-  }
-
-  toggleSubItem = (subItemId: string) => {
-    this.setState({ expandedSubItem: subItemId })
   }
 
   toggleAccordion = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, titleProps: any) => {
@@ -93,7 +85,7 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
           {subItem.description}
           {
             subItem.anchorText && subItem.url && (
-              <span>{`${subItem.description ? ' - ' : ''}`}<a href={subItem.url} target="_blank">{subItem.anchorText}</a></span>
+              <span>{`${subItem.description ? ' - ' : ''}`}<a href={subItem.url} target="_blank" rel="noopener">{subItem.anchorText}</a></span>
             )
           }
         </React.Fragment>
@@ -105,16 +97,18 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
     
     const Level1Content = (
       <div>
-        <Accordion.Accordion panels={subItemPanels} />
+        <Accordion exclusive panels={subItemPanels} />
       </div>
     )
     
     const rootPanels = [
-      { key: 'panel-1', title: 'Subitems', content: { content: Level1Content } },
+      { key: id, title: 'Subitems', content: Level1Content },
     ]
     
     const NestedSubitems = () => (
-      <Accordion fluid panels={rootPanels} styled />
+      <div>
+        <Accordion panels={rootPanels} />
+      </div>
     )
 
     return (
@@ -124,7 +118,7 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
           <Card.Description>
             {description}
             { item.anchorText && item.url && (
-              <span>{`${description ? ' - ' : ''}`}<a className="ui" href={item.url} target="_blank">{item.anchorText}</a></span>
+              <span>{`${description ? ' - ' : ''}`}<a className="ui" href={item.url} target="_blank" rel="noopener">{item.anchorText}</a></span>
             )}
           </Card.Description>
         </Card.Content>
@@ -135,12 +129,14 @@ export class ViewItem extends React.PureComponent<ViewItemProps, ViewItemState> 
               <Button 
                 icon
                 onClick={this.props.toggleEditItem}
+                aria-label="Edit This Item"
               >
                 <Icon name='pencil' />
               </Button>
               <Button 
                 icon
                 onClick={() => this.props.deleteItem(id)}
+                aria-label="Delete This Item"
               >
                 <Icon name='trash' />
               </Button>

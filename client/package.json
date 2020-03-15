@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.6.4",
+    "@fluentui/react": "^0.46.0",
     "axios": "^0.18.1",
     "dateformat": "^3.0.3",
     "lodash.get": "^4.4.2",
