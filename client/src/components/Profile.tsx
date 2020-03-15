@@ -193,9 +193,9 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
     this.setState({
       ...this.state,
       categories: editedCategoriesArray,
-      currentlyEditedCategoryName: '',
-      currentlyEditedCategoryOrder: 100,
-      currentlyEditedCategoryPublic: false,
+      currentlyEditedCategoryName: initialItemsState.currentlyEditedCategoryName,
+      currentlyEditedCategoryOrder: initialItemsState.currentlyEditedCategoryOrder,
+      currentlyEditedCategoryPublic: initialItemsState.currentlyEditedCategoryPublic,
     })
   }
 
@@ -247,6 +247,9 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
 
     this.setState({
       ...this.state,
+      currentlyEditedCategoryName: initialItemsState.currentlyEditedCategoryName,
+      currentlyEditedCategoryOrder: initialItemsState.currentlyEditedCategoryOrder,
+      currentlyEditedCategoryPublic: initialItemsState.currentlyEditedCategoryPublic,
       categories: newArray,
     })
   }
@@ -286,6 +289,7 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
             </Card.Content>
             <Card.Content>
               <Form.Field 
+                id="display-name"
                 control={Input}
                 name='displayName'
                 label='display name for public profile, i.e. imbibe.dev/public/:displayName'
@@ -298,6 +302,7 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
                 }}
               />
               <Form.Field 
+                id="is-profile-public"
                 control={Checkbox}
                 name='isProfilePublic'
                 label='is Profile Public'
@@ -314,8 +319,9 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
             <Card.Content>
               <Form onSubmit={this.handleImageUpload}>
                 <Form.Field>
-                  <label>Profile Pic</label>
+                  <label htmlFor="image-uploader">Profile Pic</label>
                   <input
+                    id="image-uploader"
                     type="file"
                     accept="image/*"
                     placeholder="Image to upload"
@@ -360,6 +366,7 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
                         <Card>
                           <Card.Content>
                             <Form.Field 
+                              id={`currently-edited-category-name-${this.state.currentlyEditedCategoryName}`}
                               control={Input}
                               name='currentlyEditedCategoryName'
                               label='category name'
@@ -368,6 +375,7 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
                               onChange={this.handleInputChange}
                             />
                             <Form.Field 
+                              id={`currently-edited-category-order-${this.state.currentlyEditedCategoryOrder}`}
                               control={Input}
                               name='currentlyEditedCategoryOrder'
                               label='category display order'
@@ -376,6 +384,7 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
                               onChange={this.handleInputChange}
                             />
                             <Form.Field 
+                              id={`currently-edited-isPublic-${this.state.currentlyEditedCategoryPublic}`}
                               control={Checkbox}
                               name='currentlyEditedCategoryPublic'
                               label='publically viewable category'
@@ -415,6 +424,7 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
             </Card.Content>
             <Card.Content>
               <Form.Field 
+                id="new-category-name"
                 control={Input}
                 name='currentlyEditedCategoryName'
                 label='category name'
@@ -423,6 +433,7 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
                 onChange={this.handleInputChange}
               />
               <Form.Field 
+                id="new-category-order"
                 control={Input}
                 name='currentlyEditedCategoryOrder'
                 label='category display priority, from left to right'
@@ -431,6 +442,7 @@ class Profile extends React.PureComponent<ItemsProps, ItemsState> {
                 onChange={this.handleInputChange}
               />
               <Form.Field 
+                id="new-category-isPublic"
                 control={Checkbox}
                 name='currentlyEditedCategoryPublic'
                 label='publically viewable category'
