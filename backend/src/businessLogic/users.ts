@@ -44,5 +44,10 @@ export async function updateUser(
   userObj: User,
   currentUserId: String,
 ): Promise<User> {
-  return userAccess.updateUser(userObj, currentUserId)
+  return userAccess.updateUser({
+    ...userObj,
+    displayName: userObj.displayName || "none",
+    profileImageUrl: userObj.profileImageUrl || null,
+    description: userObj.description || null,
+  }, currentUserId)
 }
