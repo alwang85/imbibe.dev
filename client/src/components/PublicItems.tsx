@@ -5,6 +5,7 @@ import {
   Image,
   Item as ItemComponent,
   Loader,
+  Message,
 } from 'semantic-ui-react'
 import md from 'markdown-it';
 
@@ -35,10 +36,12 @@ interface layoutItem {
 interface PublicItemsState {
   description?: string | null,
   profileImageUrl?: string | null,
-  loadingPublicItems: boolean
+  loadingPublicItems: boolean,
+  showError: boolean,
 }
 const initialPublicItemsState = {
   loadingPublicItems: true,
+  showError: false,
 }
 
 export class PublicItems extends React.PureComponent<PublicItemsProps, PublicItemsState> {
@@ -67,7 +70,10 @@ export class PublicItems extends React.PureComponent<PublicItemsProps, PublicIte
       });
       
     } catch (e) {
-      alert(`Failed to fetch PublicItems: ${e.message}`)
+      this.setState({
+        loadingPublicItems: false,
+        showError: true,
+      })
     }
   }
 
@@ -77,6 +83,14 @@ export class PublicItems extends React.PureComponent<PublicItemsProps, PublicIte
 
     if (this.state.loadingPublicItems) {
       return this.renderLoading()
+    }
+
+    if(this.state.showError) {
+      return (
+        <Message negative>
+          <Message.Header>We're sorry, this profile is not accessible</Message.Header>
+        </Message>
+      )
     }
 
     const publicProfile = (
